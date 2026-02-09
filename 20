@@ -1,0 +1,22 @@
+class gamer:
+    def __init__(self,nome, nick):
+        self.nome = nome 
+        self.nick = nick
+    
+    game_fav = []
+    def add_favoritos(self,favorito):
+        self.favorito = favorito
+        self.game_fav.append(self.favorito)
+
+    def ficha(self):
+        print(f'Jogador {self.nick}')
+        print(f'Nome verdadeiro: {self.nome} ')
+        print('Jogos favoritos')
+        
+        for i in range(len(self.game_fav)):
+            print(f'{self.game_fav[i]}') 
+
+j1 = gamer('kennedy cordeiro', 'kenny7565')
+j1.add_favoritos('Watch Dogs')
+j1.add_favoritos('fortnite')
+j1.ficha()

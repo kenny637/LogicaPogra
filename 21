@@ -1,0 +1,27 @@
+
+class caneta:
+    def __init__(self,cor):
+        self.cor = cor
+        colors = {
+        'PR':' \033 [30m',
+        'VERM':' \033 [31m',
+        'VERD':' \033 [32m',
+        'AM':' \033 [33m',
+        'AZ':' \033 [34m',
+        'MA':' \033 [35m',
+        'CI':' \033 [36m',
+        'BR':' \033 [37m',
+        'RE':' \033 [39m'}
+
+    def destampar(self):
+        self.destanpada == True
+    
+    def escrever(self ,txt):
+        if self.destanpada == True:
+            self.escreve = txt
+            print('\033[31m', self.escreve)
+        else:
+            print('A caneta esta tampada')
+    
+c1 = caneta('azul')
+c1.escrever('e ob e')

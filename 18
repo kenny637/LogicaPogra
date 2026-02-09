@@ -1,0 +1,15 @@
+class churrasco:
+    def __init__(self,tilulo, pessoas):
+        self.titulo = tilulo
+        self.quantidade = pessoas
+
+    def quantidade_carne(self):
+        mut = self.quantidade * 0.4
+        mut2 = mut * 82.40
+        print(f'Analisando {self.titulo} com {self.quantidade} pessoas')
+        print(f'Cada participante commera 0.4Kg de carne e cada Kg custa R$82,40')
+        print(f'Recomendo comprar {mut}Kg de carne')
+        print(f'O custo total sera de R${mut2:.2f}')
+
+c1=churrasco('currasco com os amigos',15)
+c1.quantidade_carne()

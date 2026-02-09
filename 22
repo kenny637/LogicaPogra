@@ -1,0 +1,15 @@
+class controleremoto:
+    def __init__ (self):
+        None
+        def tv(self):
+            self.ch = 1
+            while True:
+                self.ligar = not True
+
+                if self.ligar == True:
+                    print('canal  = 1 2 3 4 5')
+                    print('volume = ')
+                    self.tv = input(str(f'< ch{self.ch} > - vol +'))
+        
+c1 = controleremoto()
+c1.tv()

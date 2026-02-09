@@ -1,0 +1,25 @@
+class livro:
+    def __init__(self,nome, paginas):
+        self.nome = nome
+        self.pagina = paginas
+        self.pagina_atual = 2 
+
+        print(f'Voce acabou de abrir {self.nome} que tem {self.pagina} no total')
+        print('Voce esta na pagina 1') 
+
+    def avancar_paginas(self,pag):
+        self.irpara = pag
+        
+        min_pagina = 19
+
+        if self.pagina_atual == 20:
+            print(f'Voce chegou ao fim do livro {self.nome}')
+        else:
+            for self.pagina_atual in range(min(min_pagina, self.irpara)):
+                print(f'pag{self.pagina_atual+2} >',end=' ')
+            print(f'\nvocê avançou {self.irpara} pags e agora esta na pagina {self.pagina_atual+2}')
+            self.pagina_atual = self.irpara
+            
+li = livro('10 coisas que eu aprendi',20)
+li.avancar_paginas(10)
+li.avancar_paginas(15)

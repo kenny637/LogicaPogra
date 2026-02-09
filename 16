@@ -1,0 +1,15 @@
+class Funcionario:
+    def __init__(self, nome, setor, cargo):
+        self.nome = nome
+        self.setor = setor
+        self.cargo = cargo
+    
+    def __str__(self):
+        return f"Ola sou {self.nome} e sou {self.setor} do setor de {self.cargo} da empresa Curso em Video"
+        
+
+c1 = Funcionario('kenny', 'adimin', 'ti')
+print(c1)
+
+c2 = Funcionario('maria', 'diretora', 'markefting')
+print(c2)

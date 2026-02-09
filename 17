@@ -1,0 +1,10 @@
+class produto:
+    def __init__(self, nome, preço):
+        self.nome = nome
+        self.preço = preço
+
+    def etiqueta(self):
+        print(f'produto \n{self.nome} \n{self.preço}')
+    
+p1 = produto('rtx 9050',7500)
+p1.etiqueta()
