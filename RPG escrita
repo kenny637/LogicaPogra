@@ -1,0 +1,1607 @@
+from random import randint
+import random
+import time
+
+dificuldade = 0 # dificuldade
+
+# jogador
+vida_jogador = 100  # Vida inicial do jogador
+vida_max_j = 100  # Vida maxima do jogador
+mana_jogador = 50  # Mana inicial do jogador
+mana_max_j = 50  # Mana maxima do jogador
+estamina_jogador = 150 # estamina inicial do jogador
+estamina_max_j = 150 # estamina inicial do jogador
+armadura_j = 5
+dano_magia_j = 20
+escudo_base_j = 8
+dano_base_j = 12
+eficiencia_cura = 10
+eficiencia_mana = 10
+perda_mana_base_j = 15
+perda_estamina_base_j = 3
+
+# inimigo
+nome_inimigo = ''
+vida_inimigo = 100  # Vida inicial do inimigo
+vida_max_i = 100  # Vida maxima do inimigo
+mana_inimigo = 50  # Mana inicial do inimigo
+mana_max_i = 50  # Mana maxima do inimigo
+estamina_inimigo = 300 # estamina inicial do inimigo
+estamina_max_i = 300 # estamina inicial do inimigo
+armadura_i = 5
+dano_magia_i = 20
+dado_i = randint(dificuldade, 20)
+escudo_base_i = 8
+dano_base_i = 12
+eficiencia_cura_i = 15
+eficiencia_mana_i = 15
+perda_mana_base_i = 15
+perda_estamina_base_i = 2
+
+# nome
+ataque = 'Ataque'
+escudo = 'Escudo'
+
+# itens jogador
+pocao_mana = 5  # Poções de mana disponíveis para o jogador
+pocao_cura = 5  # Poções de cura disponíveis para o jogador
+pocao_agilidade = 1
+pocao_adrenalina = 1
+
+moeda_bronze = 0
+moeda_prata = 0
+moeda_ouro = 0
+
+# Nivel
+inimigo_nivel = 1
+jogador_nivel = 1
+xp_atual = 0
+xp_proximo_nivel = 20
+xp_min = 0
+xp_max = 100
+pontos_abilidades = 0
+
+# bonus
+dano_bonus = 0
+escudo_bonus = 0
+critico = 0.4
+
+# efeitos 
+chamas_j = 0
+empalamento_j = 0
+atordoado_j = 0
+sangramento_j = 0
+chamas_i = 0
+empalamento_i = 0
+atordoado_i = 0
+sangramento_i = 0
+
+mortes_inimigos = 0 # Contador de mortes 
+turno = 0  # Contador de turnos
+
+# Função para evento 
+cavalo = False
+energia = 0.05
+abilidade_100 = True
+
+#valores false
+defesa_j = False
+esquiva_j = False
+defesa_i = False
+esquiva_i = False
+
+#cidade
+espada_aprimorada = False
+espada_forjada = False
+Runa_adiquirida = False
+escudo_criado = False
+cajado_criado = False
+manto_criardo = False 
+joia_criada = False
+ctco = 0
+itens = {'raízes revigorantes':0,
+        'Cogumelo Brilhante':0,
+        'Erva-de-São-João':0,  
+        'Rhodiola rosea':0}
+
+ata = False
+esc = False
+
+def evento_aleatorio():
+    global encontrado, vida_jogador, mana_jogador, estamina_jogador, pocao_cura 
+    global pocao_mana, moeda_ouro, moeda_prata, moeda_bronze, dano_base_j
+    global escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo, vida_inimigo,vida_max_i
+    global xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, cavalo, energia, abilidade_100
+    evento = random.randint(1, 32)  # Escolhe um número aleatório entre 1 e 30
+
+    if evento == 1:
+        print("Você encontrou uma árvore frondosa e decidiu descansar.")
+        vida_jogador += int(0.10 * vida_jogador)  # Recupera 10% da vida
+        estamina_jogador += int(0.20 * estamina_jogador)  # Recupera 20% da estamina
+        print(f"Vida: {vida_jogador} +10%, Estamina: {estamina_jogador} +20%")
+
+    elif evento == 2:
+        print("Você tropeçou em uma pedra e caiu!")
+        vida_jogador -= int(0.05 * vida_jogador)  # Perde 5% da vida
+        estamina_jogador -= int(0.10 * estamina_jogador)  # Perde 10% da estamina
+        print(f"Vida: {vida_jogador} -5%, Estamina: {estamina_jogador} -10%")
+
+    elif evento == 3:
+        print("Você encontrou uma fogueira abandonada e decidiu descansar.")
+        vida_jogador += int(0.30 * vida_jogador)  # Recupera 30% da vida
+        mana_jogador += int(0.30 * mana_jogador)  # Recupera 30% da mana
+        print(f"Vida: {vida_jogador} +30%, Mana: {mana_jogador} +30%")
+
+    elif evento == 4:
+        print("Você encontrou uma cachoeira relaxante.")
+        vida_jogador += int(0.15 * vida_jogador)  # Recupera 15% da vida
+        estamina_jogador += int(0.20 * estamina_jogador)  # Recupera 20% da estamina
+        print(f"Vida: {vida_jogador} +15%, Estamina: {estamina_jogador} +20%")
+
+    elif evento == 5:
+        print("Você encontrou um baú escondido!")
+        pocao_cura += randint(1,2)
+        pocao_mana += randint(1,2)
+        print(f"Poções de cura: {pocao_cura}, Poções de mana: {pocao_mana}")
+
+    elif evento == 6:
+        print("Você foi picado por um inseto venenoso!")
+        vida_jogador -= int(0.10 * vida_jogador)  # Perde 10% da vida
+        print(f"Vida: {vida_jogador} -10%")
+
+    elif evento == 7:
+        print("Você encontrou um mercador viajante.")
+        vendendo = randint(1, 10)
+        if vendendo:
+            if vendendo == 1:
+                print("Ele oferece uma Maçã Dourada que recupera 10% de Vida por 3 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 3:
+                        moeda_ouro -= 3
+                        vida_jogador += int(min(vida_max_j * 0.10, vida_max_j - vida_jogador))
+                        print(f"Você comprou uma Maçã Dourada. Vida atual: {vida_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 2:
+                print("Ele oferece um Mel da Floresta Encantada que recupera 10% de Mana e 10% de Estamina por 6 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 6:
+                        moeda_ouro -= 6
+                        mana_jogador += int(min(mana_max_j * 0.10, mana_max_j - mana_jogador))
+                        estamina_jogador += int(min(estamina_max_j * 0.10, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou um Mel da Floresta Encantada. Mana atual: {mana_jogador}, Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 3:
+                print("Ele oferece um Peixe Grelhado do Lago Sereno que recupera 30% de Vida e 15% de Estamina por 9 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 9:
+                        moeda_ouro -= 9
+                        vida_jogador += int(min(vida_max_j * 0.15, vida_max_j - vida_jogador))
+                        estamina_jogador += int(min(estamina_max_j * 0.10, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou um Peixe Grelhado do Lago Sereno. Vida atual: {vida_jogador}, Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 4:   
+                print("Ele oferece um Suco de Frutas Místicas que recupera 15% de Mana por 5 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 5:
+                        moeda_ouro -= 5
+                        mana_jogador += int(min(mana_max_j * 0.15, mana_max_j - mana_jogador))
+                        print(f"Você comprou um Suco de Frutas Místicas. Mana atual: {mana_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+                    
+            if vendendo == 5:
+                print("Ele oferece um Pão Enriquecido que recupera 20% de Estamina por 4 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 4:
+                        moeda_ouro -= 4
+                        estamina_jogador += int(min(estamina_max_j * 0.20, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou um Pão Enriquecido. Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 6:
+                print("Ele oferece um Ensopado do Aventureiro que recupera 25% de Vida e 10% de Estamina por 8 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 8:
+                        moeda_ouro -= 8
+                        vida_jogador += int(min(vida_max_j * 0.25, vida_max_j - vida_jogador))
+                        estamina_jogador += int(min(estamina_max_j * 0.10, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou um Ensopado do Aventureiro. Vida atual: {vida_jogador}, Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 7:
+                print("Ele oferece um Chá das Fadas que recupera 30% de Mana e 5% de Vida por 7 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 7:
+                        moeda_ouro -= 7
+                        mana_jogador += int(min(mana_max_j * 0.30, mana_max_j - mana_jogador))
+                        vida_jogador += int(min(vida_max_j * 0.05, vida_max_j - vida_jogador))
+                        print(f"Você comprou um Chá das Fadas. Mana atual: {mana_jogador}, Vida atual: {vida_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 8:
+                print("Ele oferece uma Carne Assada do Javali que recupera 40% de Estamina por 10 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 10:
+                        moeda_ouro -= 10
+                        estamina_jogador += int(min(estamina_max_j * 0.40, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou uma Carne Assada do Javali. Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+
+            if vendendo == 9:
+                print("Ele oferece um Bolo da Lua que recupera 20% de Vida, 20% de Mana e 20% de Estamina por 15 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 15:
+                        moeda_ouro -= 15
+                        vida_jogador += int(min(vida_max_j * 0.20, vida_max_j - vida_jogador))
+                        mana_jogador += int(min(mana_max_j * 0.20, mana_max_j - mana_jogador))
+                        estamina_jogador += int(min(estamina_max_j * 0.20, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou um Bolo da Lua. Vida atual: {vida_jogador}, Mana atual: {mana_jogador}, Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+            if vendendo == 10:
+                print("Ele oferece uma Poção de Energia que recupera 50% de Estamina por 12 moedas de ouro.")
+                try:
+                    ecolha = input("O que você faz? (S/N) ").upper()
+                    if ecolha == 'S' and moeda_ouro >= 12:
+                        moeda_ouro -= 12
+                        estamina_jogador += int(min(estamina_max_j * 0.50, estamina_max_j - estamina_jogador))
+                        print(f"Você comprou uma Poção de Energia. Estamina atual: {estamina_jogador}, Moedas restantes: {moeda_ouro}")
+                    else:
+                        print("Você não tem moedas suficientes ou escolheu não comprar.")
+                except ValueError:
+                    print("Entrada inválida. Digite S para sim ou N para não.")
+        
+    elif evento == 8:
+        print("Uma tempestade repentina começou!")
+        estamina_jogador -= int(0.10 * estamina_jogador)  # Perde 10% da estamina
+        print(f"Estamina: {estamina_jogador} -10%")
+
+    elif evento == 9:
+        print("Você encontrou um animal ferido.")
+        print("1) Ajudar (gastar uma poção de cura)")
+        print("2) Ignorar")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1 and pocao_cura > 0:
+                    pocao_cura -= 1
+                    print("Você ajudou o animal!")
+                    break
+                elif escolha == 2:
+                    print("Você decidiu ignorar o animal.")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 10:
+        print("Você caiu em uma armadilha!")
+        vida_jogador -= int(min(vida_jogador * 0.15, vida_jogador))  # Perde 15% da vida
+        print(f"Vida: {vida_jogador} -15%")
+
+    elif evento == 11:
+        print("Você foi emboscado por bandidos!")
+        print("1) Lutar")
+        print("2) Fugir")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    print("Você decidiu lutar!")
+                    encontrado = True
+                    nome_inimigo = 'bandidos'
+                    vida_inimigo = 200
+                    vida_max_i = vida_inimigo
+                    nivel_i = 8 
+                    break
+                elif escolha == 2:
+                    if random.random() < 0.5:  # 50% de chance de fugir
+                        print("Você conseguiu fugir!")
+                    else:
+                        print("Você falhou em fugir e foi atacado!")
+                        vida_jogador -= int(0.20 * vida_jogador)  # Perde 20% da vida
+                        print(f"Vida: {vida_jogador} -20%")
+                        escolha = 1
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 12:
+        print("Você encontrou um inimigo dormindo.")
+        print("1) Atacar")
+        print("2) Passar despercebido")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    print("Você atacou o inimigo dormindo!")
+                    print("Você derrotou o inimigo antes que ele pudesse reagir!")
+                    break
+                elif escolha == 2:
+                    print("Você passou despercebido.")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 13:
+        print("Você foi atacado por uma matilha de lobos!")
+        print("1) Lutar")
+        print("2) Usar fogo para afastá-los")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    print("Você decidiu lutar!")
+                    encontrado = True
+                    nome_inimigo = 'lobos'
+                    vida_inimigo = 100
+                    vida_max_i = vida_inimigo
+                    xp_max = 80
+                    xp_min = 10
+                    nivel_i = 8 
+                    break
+                elif escolha == 2:
+                    print("Você usou fogo e afastou os lobos!")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 14:
+        print("Você encontrou um tesouro guardado por um inimigo forte.")
+        print("1) Lutar")
+        print("2) Tentar roubar o tesouro")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    print("Você decidiu lutar!")
+                    encontrado = True
+                    nome_inimigo = 'Org'
+                    vida_inimigo = 800
+                    vida_max_i = vida_inimigo
+                    xp_max = 450
+                    xp_min = 100
+                    nivel_i = 15
+                    break
+                elif escolha == 2:
+                    if random.random() < 0.3:  # 30% de chance de sucesso
+                        print("Você roubou o tesouro com sucesso!")
+                        moeda_ouro += random.randint(1,30)
+                        moeda_prata += random.randint(1,40)
+                        moeda_bronze += random.randint(1,50)
+                        print(f"Moedas de ouro: {moeda_ouro}")
+                        print(f"Moedas de prata: {moeda_prata}")
+                        print(f"Moedas de bronze: {moeda_bronze}")
+                    else:
+                        print("Você falhou e foi descoberto!")
+                        escolha = 1
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 15:
+        print("Você comeu cogumelos venenosos por engano!")
+        vida_jogador -= int(0.20 * vida_jogador)  # Perde 20% da vida
+        print(f"Vida: {vida_jogador} -20%")
+
+    elif evento == 16:
+        print("Um aliado misterioso apareceu e decidiu ajudá-lo!")
+        print("Ele causará dano extra por 3 turnos.")
+        dano_bonus += 3
+        # Aqui você pode adicionar um bônus de dano temporário ao jogador.
+
+    elif evento == 17:
+        print("Você ativou uma armadilha mágica!")
+        mana_jogador -= int(0.10 * mana_jogador)  # Perde 10% da mana
+        print(f"Mana: {mana_jogador} -10%")
+
+    elif evento == 18:
+        print("Você avista um inimigo!")
+        print("Ele tenta fugir de você!")
+        print("1) Perseguir")
+        print("2) Deixá-lo ir")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    if random.random() < 0.5:  # 50% de chance de captura
+                        print("Você capturou o inimigo e ganhou recompensas!")
+                        moeda_prata += 20
+                        print(f"Moedas de prata: {moeda_prata}")
+                    else:
+                        estamina_jogador -= int(max(estamina_max_j * 0.10, estamina_jogador))  # Perde 10% da estamina
+                        print(f"O inimigo escapou! Estamina: {estamina_jogador} -10%")
+                    break
+                elif escolha == 2:
+                    print("Você deixou o inimigo ir.")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 19:
+        print("Você encontrou um portal misterioso!")
+        print("1) Entrar no portal")
+        print("2) Ignorar")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    print("Você foi teleportado para um local aleatório no mapa!")
+                    break
+                elif escolha == 2:
+                    print("Você decidiu não entrar no portal.")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 20:
+        print("Você foi cercado por uma aranha gigante!")
+        print("1) Lutar")
+        print("2) Usar fogo para afastá-la")
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                if escolha == 1:
+                    print("Você decidiu lutar!")
+                    encontrado = True
+                    nome_inimigo = 'Aranha gigante'
+                    vida_inimigo = 600
+                    vida_max_i = vida_inimigo
+                    xp_max = 250
+                    xp_min = 50
+                    nivel_i = 10 
+                    break
+                elif escolha == 2:
+                    print("Você usou fogo e afastou as aranhas!")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 21:
+        print("Você encontrou uma poção rara!")
+        vida_jogador += int(min(vida_max_j * 0.30, vida_max_j - vida_jogador))  # Recupera 30% da vida
+        mana_jogador += int(min(mana_max_j * 0.30, mana_max_j - mana_jogador))  # Recupera 30% da mana
+        print(f"Vida: {vida_jogador} +30%, Mana: {mana_jogador} +30%")
+
+    elif evento == 22:
+        print("Você descobriu um santuário antigo!")
+        print("1) Receber bônus de dano (30 Turnos).")
+        print("2) Receber bônus de defesa (30 Turnos).")
+        while True:
+            try:
+                escolha = int(input("O que você escolhe? "))
+                if escolha == 1:
+                    dano_bonus += 30
+                    print(f"Dano aumentado temporariamente para {dano_bonus}!")
+                    break
+                elif escolha == 2:
+                    escudo_bonus += 30
+                    print(f"Defesa aumentada temporariamente para {escudo_bonus}!")
+                    break
+                else:
+                    print("Escolha inválida. Digite 1 ou 2.")
+            except ValueError:
+                print("Entrada inválida. Digite 1 ou 2.")
+
+    elif evento == 23:
+        print("Você encontrou um livro de magia!")
+        dano_bonus += 60  # Aumenta o dano mágico em 10%
+        print(f"Dano mágico aumentado temporariamente para {dano_bonus} turnos!")
+
+    elif evento == 24:
+        print("Você encontrou um tesouro escondido!")
+        moeda_ouro += 10
+        moeda_prata += 50
+        moeda_bronze += 100
+        print(f"Moedas de ouro: {moeda_ouro} +10, Moedas de prata: {moeda_prata} +50, Moedas de bronze: {moeda_bronze} +100")
+
+    elif evento == 25:
+        if cavalo == False:
+            print("Você encontrou um cavalo selvagem e decidiu domá-lo!")
+            print("Agora você cansara menos na viajem.")
+            energia = 0.03
+            cavalo = True
+        else:
+            print('você avista alguns cavalos pastando.')
+    elif evento == 26:
+        print("Você recebeu uma bênção divina!")
+        vida_jogador += int(0.10 * vida_jogador)  # Aumenta a vida máxima em 10%
+
+        print(f"Vida máxima aumentada para {vida_jogador} +10% .")
+
+    elif evento == 27:
+        print("Você encontrou um ferreiro amigável!")
+        dano_base_j += 5  # Aumenta o dano da arma em 5
+        print(f"Dano da arma aumentado para {dano_base_j} +5!")
+
+    elif evento == 28:
+        print("Você encontrou um jardim de ervas raras!")
+        eficiencia_cura += 4
+        eficiencia_mana += 4
+        print(f"Eficiencia de cura: {eficiencia_cura} +4%, Eficiencia de mana: {eficiencia_mana} +4%.")
+
+    elif evento == 29:
+        print("Você ajuda um senho a levar sua carrosa ate sua casa!")
+        print("ele o reconpensa com comida e algumas moedas.")
+        moeda_bronze += 30
+        print(f'Moeda de Bronze: {moeda_bronze} +30.')
+
+    elif evento == 30:
+        print("Você encontrou um mapa do tesouro!")
+        print("Siga o mapa para encontrar recompensas valiosas.")
+        print("Apos uma loga procura vc encontra um bau com um pergaminho.")
+        print('1)Pegar')
+        print('2)Não pegar') 
+        while True:
+            try:
+                escolha = int(input("O que você faz? "))
+                rng = randint(1,10)
+                
+                if escolha == 1:
+                    if rng == 10:
+                        print(f"Você o pega, libertando uma nova abilidade, DADO_100%. ")
+                        print('Essa abilidade permite que você acerte os dois primeiros ataques em 100% de precisão.')
+                        abilidade_100 = True
+                    else:
+                        vida_jogador -= int(0.40 * vida_jogador)  # Perde 40% da vida
+                        estamina_jogador -= int(0.30 * estamina_jogador)  # Perde 30% da estamina
+                        print("Não tinha nada no pergaminho e você e atingido por uma armadilha -40% de vida, -30 de estamina.")
+                        print(f'Vida: {vida_jogador} -40%, estamina: {estamina_jogador} -30%.')
+                if escolha == 2:
+                    print('Você deside que e melhor deixá lo la, e continua sua jornada.')
+                break
+            except ValueError:
+                print("digite entre (1 e 2).")
+
+    else:
+        print("Nada de interessante aconteceu.")
+    return (encontrado, vida_jogador, mana_jogador, estamina_jogador, pocao_cura, 
+            pocao_mana, moeda_ouro, moeda_prata, moeda_bronze, dano_base_j, 
+            escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo, vida_inimigo,vida_max_i,
+            xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, cavalo, energia)
+
+# Função para andar e explorar
+def andando():
+    global estamina_jogador, encontrado, vida_jogador, mana_jogador, pocao_cura
+    global pocao_mana, moeda_ouro, moeda_prata, moeda_bronze, dano_base_j
+    global escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo, vida_inimigo,vida_max_i
+    global xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, cavalo, energia
+    global indice_capitulo_atual
+
+    while True:
+        print(f'estamina: {estamina_jogador}')
+        print('\nO que você deseja fazer?')
+        print('1) Andar')
+        print('2) Descansar')
+        print('3) Ver status')
+        if indice_capitulo_atual >= 6:
+            print('4) Não existe mais vilas nesta area')
+        else:
+            print('4) Procurar por uma vila')
+        while True:
+            try:
+                escolha = int(input('Escolha uma opção: '))
+                if escolha in [1,2,3,4]:
+                    break
+                else:
+                    print('Digite um número entre 1 e 4!')
+            except ValueError:
+                print('Digite um número entre 1 e 4!')
+
+        if escolha == 1:
+            estamina_jogador -= int(energia * estamina_jogador) 
+            # Chama o evento aleatório e atualiza as variáveis
+            evento_aleatorio()
+
+            evento = randint(1,10)
+            if encontrado == True:
+                None
+            elif evento >= 5:
+                encontrado = True
+            else:
+                continue
+            break
+        elif escolha == 2:
+            print('Você decidiu se sentar um pouco!')
+            aumento_estamina = int(estamina_max_j * 0.10)  # 10% da estamina máxima
+            estamina_jogador = min(estamina_jogador + aumento_estamina, estamina_max_j)
+            print(f"Estamina recuperada: {estamina_jogador}")
+            break
+        elif escolha == 3:
+            print(f'\nStatus do Jogador:')
+            print(f'Vida: {vida_jogador}/{vida_max_j}')
+            print(f'Mana: {mana_jogador}/{mana_max_j}')
+            print(f'Estamina: {estamina_jogador}/{estamina_max_j}')
+            print(f'Moedas: {moeda_bronze} Bronze, {moeda_prata} Prata, {moeda_ouro} Ouro')
+        elif escolha == 4:
+            if indice_capitulo_atual >= 6:
+                print('Você encontra apenas escombros') 
+            elif estamina_jogador <= 5:
+                print('Você esta muito cansado para continuar')
+            else:
+                print('Você decide procurar por uma vila...')
+                time.sleep(1)
+                vila_encontrada = random.randint(1, 10)
+                if vila_encontrada <= 3:
+                    print('Você encontrou uma vila!')
+                    cidade()
+                else:
+                    print('Você não encontra nada nas proximidades!')
+                    estamina_jogador -= 5
+                    print(f"Estamina: {estamina_jogador} -5")
+
+    return (estamina_jogador, encontrado, vida_jogador, mana_jogador, pocao_cura, pocao_mana, moeda_ouro, 
+            moeda_prata, moeda_bronze, dano_base_j, escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo,
+            vida_inimigo, vida_max_i, xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, cavalo, energia)
+
+# Definindo os capítulos com os inimigos
+capitulo_1 = {
+    "zumbi": {"vida": 50, "xp_min": 10, "xp_max": 20},
+    "esqueleto": {"vida": 80, "xp_min": 15, "xp_max": 30},
+    "fantasma": {"vida": 120, "xp_min": 20, "xp_max": 40},
+    "vampiro": {"vida": 180, "xp_min": 30, "xp_max": 60},
+    "lich": {"vida": 250, "xp_min": 50, "xp_max": 100}
+}
+
+capitulo_2 = {
+    "kobold_xama": {"vida": 200, "xp_min": 40, "xp_max": 80},
+    "mago_sombrio": {"vida": 280, "xp_min": 60, "xp_max": 120},
+    "elemental_fogo": {"vida": 350, "xp_min": 80, "xp_max": 160},
+    "djinn": {"vida": 450, "xp_min": 100, "xp_max": 200},
+    "dragao_arcano": {"vida": 800, "xp_min": 200, "xp_max": 400}
+}
+
+capitulo_3 = {
+    "slime": {"vida": 250, "xp_min": 30, "xp_max": 60},         
+    "goblin": {"vida": 320, "xp_min": 50, "xp_max": 100},                                               
+    "aranha_gigante": {"vida": 450, "xp_min": 70, "xp_max": 140}, 
+    "ogro": {"vida": 600, "xp_min": 90, "xp_max": 180},        
+    "mimico": {"vida": 1000, "xp_min": 120, "xp_max": 240}     
+}
+
+capitulo_4 = {
+    "cervo_sombrio": {"vida": 500, "xp_min": 80, "xp_max": 160},
+    "urso_coruja": {"vida": 650, "xp_min": 120, "xp_max": 240},  
+    "lobisomem": {"vida": 800, "xp_min": 160, "xp_max": 320},   
+    "javali_demoníaco": {"vida": 950, "xp_min": 200, "xp_max": 400},
+    "troll": {"vida": 1500, "xp_min": 250, "xp_max": 500}       
+}
+
+capitulo_5 = {
+    "enguia_eletrica": {"vida": 800, "xp_min": 120, "xp_max": 240},
+    "sereia_sombria": {"vida": 1000, "xp_min": 180, "xp_max": 360},
+    "tubarao_abissal": {"vida": 1200, "xp_min": 250, "xp_max": 500},
+    "espirito_agua": {"vida": 1400, "xp_min": 220, "xp_max": 440},
+    "kraken": {"vida": 2000, "xp_min": 500, "xp_max": 1000}
+}
+
+capitulo_6 = {
+    "demonio_menor": {"vida": 1000, "xp_min": 100, "xp_max": 200},
+    "cao_infernal": {"vida": 1200, "xp_min": 180, "xp_max": 360},
+    "succubus_incubus": {"vida": 1500, "xp_min": 250, "xp_max": 500},
+    "gargula": {"vida": 1700, "xp_min": 350, "xp_max": 700},
+    "archdemon": {"vida": 2500, "xp_min": 800, "xp_max": 1600}
+}
+
+lacaio_7 = {
+    "guardião corrompido": {"vida": 2600, "xp_min": 800, "xp_max": 1600},}
+lacaio_8 = {
+    "cavaleiro do abismo": {"vida": 3000, "xp_min": 1000, "xp_max": 2000},}
+lacaio_9 = {
+    "serafim_caido": {"vida": 4000, "xp_min": 1200, "xp_max": 2400},}
+
+capitulo_final = {
+    "Malgethar": {"vida": 6000,"xp_min": 3000,"xp_max": 6000}}
+
+def obter_ultimo_monstro(capitulo):
+    chaves = list(capitulo.keys())
+    if indice_capitulo_atual == 9:
+        return chaves[0] if chaves else None
+    else:
+        return chaves[-1] if chaves else None
+
+def avancar_capitulo(capitulo_atual, nome_inimigo_derrotado):
+    ultimo_monstro = obter_ultimo_monstro(capitulo_atual)
+    if nome_inimigo_derrotado == ultimo_monstro:
+        print(f"Você derrotou o {ultimo_monstro}!",end='')
+        if capitulo_atual != capitulo_final:
+            print(" Avançando para o próximo capítulo.\n")
+        return True  # Indica que o jogador deve avançar de capítulo
+    return False  # Permanece no capítulo atual
+capitulos = [capitulo_1, capitulo_2, capitulo_3, capitulo_4, capitulo_5, capitulo_6, lacaio_7, lacaio_8, lacaio_9, capitulo_final]
+indice_capitulo_atual = 0
+capitulo_atual = capitulos[indice_capitulo_atual]
+
+# Escolha da dificuldade do jogo
+print('1)Fácil')
+print('2)Normal')
+print('3)Difícil')
+print('4)Impossível')
+while True:
+    try:
+        escolha = int(input('Escolha a dificuldade: '))
+        if escolha in [1, 2, 3, 4]:
+            break
+        else:
+            print("Escolha inválida. Digite um número entre 1 e 4.")
+    except ValueError:
+        print("Entrada inválida. Digite um número entre 1 e 4.")
+# Configuração do nível de dificuldade
+if escolha == 1:
+    dificuldade = 6  # Fácil
+if escolha == 2:
+    dificuldade = 7  # Normal
+if escolha == 3:
+    dificuldade = 8  # Difícil
+if escolha == 4:
+    dificuldade = 9  # Impossível
+
+# Escolha do tipo de magia
+print('1) Magia de Fogo')
+print('2) Magia de Água')
+print('3) Magia de Vento')
+print('4) Magia de Terra')
+while True:
+    try:
+        magia = int(input('Escolha a sua magia: '))
+        if magia in [1, 2, 3, 4]:
+            break
+        else:
+            print("Escolha inválida. Digite um número entre 1 e 4.")
+    except ValueError:
+        print("Entrada inválida. Digite um número entre 1 e 4.")
+# Configuração do poder de ataque e dano da magia
+if magia == 1:
+    afinidade_j = 'Bola de Fogo'
+    chamas_j = 3 
+elif magia == 2:
+    afinidade_j = 'Jato Aquático'
+    atordoado_j = 1
+elif magia == 3: 
+    afinidade_j = 'Lamina de Vento'
+    atordoado_j = 1
+elif magia == 4: 
+    afinidade_j = 'Lança de Terra'
+    empalamento_j = 2
+
+# Escolha magia inimigo
+def escolha_magia_i():
+    global magia_i, afinidade_i
+    magia_i = randint(1, 4)
+    if magia_i == 1:
+        afinidade_i = 'Bola de Fogo'
+    elif magia_i == 2:
+        afinidade_i = 'Bola de Água'
+    elif magia_i == 3: 
+        afinidade_i = 'Lamina de Vento'
+    elif magia_i == 4: 
+        afinidade_i = 'Lança de Pedra'
+
+# Função para aleatoriedade do jogador
+def aleatoridade_j():
+    global afinidade_j
+    global dado_j, dano_j, escudo_efetivo_j, cura_j, mana_j, perda_mana_j, perda_estamina_j, magia_especial_j
+    dado_j = randint(1, 20)  # Dado do jogador
+    dano_j = random.randint(int((dano_base_j * 70)/100),dano_base_j)# Dano do jogador
+    escudo_efetivo_j = randint(int((escudo_base_j * 70)/100),escudo_base_j)  # Eficácia do escudo
+    # Cura aleatória entre 2% e 10% da vida máxima
+    cura_percentual = random.randint(max(1, eficiencia_cura-8), eficiencia_cura)  # Percentual de cura entre 2 e 10
+    cura_j = int(vida_max_j * (cura_percentual / 100))  # Cura do jogador
+    # Cura aleatória entre 2% e 10% da vida máxima
+    mana_percentual = random.randint(eficiencia_mana-8, eficiencia_mana)  # Percentual de cura entre 2 e 10
+    mana_j = (mana_max_j * (mana_percentual / 100))  # Cura do jogador
+    perda_mana_j = randint(5, perda_mana_base_j)  # Perda de mana
+    perda_estamina_j = perda_estamina_base_j
+    magia_especial_j =  random.randint(int((dano_magia_j * 70)/100),dano_magia_j)  # Dano da magia especial do jogador
+    # Retorna os valores necessários para o turno
+    return dado_j, dano_j, escudo_efetivo_j, cura_j, mana_j, perda_mana_j, perda_estamina_j, magia_especial_j
+
+# Função para aleatoriedade do inimigo
+def aleatoridade_i():
+    global dificuldade, afinidade_i, dado_i
+    global dado_i, dano_i, escudo_efetivo_i, cura_i, mana_i, perda_mana_i, perda_estamina_i, magia_especial_i
+    dado_i = randint(dificuldade, 20)  # Dado do inimigo
+    dano_i = randint(int((dano_base_i * 70)/100),dano_base_i) # Dano do inimigo
+    escudo_efetivo_i = randint(int((escudo_base_i * 70)/100),escudo_base_i)  # Eficácia do escudo do inimigo
+    # Cura aleatória entre 2% e 10% da vida máxima do inimigo
+    cura_percentual_i = randint(2, 10)  # Percentual de cura entre 2 e 10
+    cura_i = int(vida_max_i * (cura_percentual_i / 100))  # Cura do inimigo (baseado na vida do jogador)
+    # Mana aleatória entre 2% e 10% da mana máxima do inimigo
+    mana_percentual_i = randint(2, 10)  # Percentual de mana entre 2 e 10
+    mana_i = int(mana_max_i * (mana_percentual_i / 100))  # Mana restaurada pelo inimigo
+    perda_mana_i = randint(5, perda_mana_base_i)  # Perda de mana
+    perda_estamina_i = perda_estamina_base_i
+    magia_especial_i = randint(int((dano_magia_i * 70)/100),dano_magia_i) # Dano da magia especial do inimigo
+    # Retorna os valores necessários para o turno
+    return dado_i, dano_i, escudo_efetivo_i, cura_i, mana_i, perda_mana_i, perda_estamina_i, magia_especial_i
+
+# Função para gerenciar o nível do jogador
+def nivel_j():
+    global jogador_nivel, xp_atual, xp_proximo_nivel, xp_min, xp_max, pontos_abilidades, mana_jogador
+    global vida_jogador, escudo_base_j, dano_base_j, dano_magia_j, eficiencia_cura
+    global eficiencia_mana, estamina_jogador, mana_max_j, vida_max_j, estamina_max_j
+
+    print('-='*10,'=-'*10)    
+    xp_combate = randint(xp_min, xp_max)
+    print(f"XP ganho no combate: {xp_combate}")
+
+    xp_atual += xp_combate
+    print(f"XP atual: {xp_atual}/{xp_proximo_nivel}")
+
+    # Verifica se o jogador deve subir de nível
+    if xp_atual >= xp_proximo_nivel:
+        while xp_atual >= xp_proximo_nivel:
+            jogador_nivel += 1
+            xp_atual -= xp_proximo_nivel
+            xp_proximo_nivel = int(xp_proximo_nivel * 1.2)
+            print(f"Parabéns! Você subiu para o nível {jogador_nivel}.")
+            print(f"XP necessário para o próximo nível: {xp_proximo_nivel}")
+            pontos_abilidades += 4
+        print('-='*10,'=-'*10)
+        print(f'pontos: {pontos_abilidades}')
+        print('1) Dano +5')
+        print('2) magia +7')
+        print('3) Escudo +5')
+        print('4) Mana +30')
+        print('5) Vida +30')
+        print('6) Estamina +40')
+        print('7) Eficácia cura +2%')
+        print('8) Eficácia mana +2%')
+        while pontos_abilidades > 0:
+            try:
+                esco_abili = int(input('Escolha uma habilidade (0 Sair): '))
+                if esco_abili in range(0, 9):
+                    if esco_abili == 0:
+                        print('Você saio')
+                        break
+                    pontos_abilidades -= 1
+                    if esco_abili == 1:
+                        dano_base_j += 5
+                        print(f'Dano almentado {dano_base_j}!')
+                    elif esco_abili == 2:
+                        dano_magia_j += 7
+                        print(f'Força da magia almentada {dano_magia_j}!')
+                    elif esco_abili == 3:
+                        escudo_base_j += 5
+                        print(f'Escudo almentado {escudo_base_j}!')
+                    elif esco_abili == 4:
+                        mana_jogador += 30
+                        mana_max_j += 20
+                        print(f'Mana almentada {mana_jogador}!')
+                    elif esco_abili == 5:
+                        vida_jogador += 30
+                        vida_max_j += 30
+                        print(f'Vida almentada {vida_jogador}!')
+                    elif esco_abili == 6:
+                        estamina_jogador += 40
+                        estamina_max_j += 40
+                        print(f'Energia almentada {estamina_jogador}!')
+                    elif esco_abili == 7:
+                        eficiencia_cura += 2
+                        print(f'Eficacia almentada {eficiencia_cura}%!')
+                    elif esco_abili == 8:
+                        eficiencia_mana += 2
+                        print(f'Eficacia almentada {eficiencia_mana}%!')
+                    print(f'Pontos: {pontos_abilidades}')
+                else:
+                    print('Escolha inválida. Digite um número de 0 a 8.')
+            except ValueError:
+                print('Escolha inválida. Digite um número de 0 a 8.')
+    print('-='*10,'=-'*10)
+    return (
+        jogador_nivel, xp_atual, xp_proximo_nivel, xp_min, xp_max, pontos_abilidades,mana_jogador, 
+        vida_jogador, escudo_base_j, dano_base_j, dano_magia_j, eficiencia_cura, eficiencia_mana, estamina_jogador, 
+        mana_max_j, vida_max_j, estamina_max_j)
+
+# Cidade Para compra ou troca de itens
+def cidade():
+    global moeda_bronze, moeda_prata, moeda_ouro, escudo_base_j, dano_base_j, afinidade_j, perda_mana_base_j
+    global espada_aprimorada, espada_forjada, Runa_adiquirida, escudo_criado
+    global cajado_criado, manto_criardo, joia_criada
+    global ctco, itens, pocao_cura, pocao_mana, pocao_agilidade, pocao_adrenalina
+    print('Você avista de longe uma pequena vila.')
+    print('Possíveis lojas:\n- Ferreiro\n- Feiticeiro\n- Posto Médico\n- Ervas e Poções')
+    while True:
+        try:
+            # Entrada como string para verificar a resposta
+            resposta = input('Quer entrar na vila? (S/N): ').strip().upper()
+            if resposta == 'S':
+                print("Você entra na vila.")
+                break
+            elif resposta == 'N':
+                print("Você decide não entrar na vila.")
+                print("Você continua sua jornada sem entrar na vila.")
+                return False
+            else:
+                print("Escolha inválida. Digite 'S' para sim ou 'N' para não.")
+        except ValueError:
+            print("Entrada inválida.")
+        
+    time.sleep(3)
+    print("Bem-vindo à vila!")
+    print('lojas:\n1 Ferreiro\n2 Feiticeiro\n3 Ervas e Poções\n4 Compra e Venda de intens\n6 Sair')
+    while True:
+        try:
+            esco_loja = int(input('qual loja deseja entrar: '))
+            if esco_loja in [1, 2, 3]:
+                break
+            elif esco_loja == 6:
+                print("Você decide apenas andar pela vila.")
+                print("Você continua sua jornada sem entrar nas lojas.")
+                return False
+            else:
+                print('Escolha envalida. Digite de 1 a 3.')
+        except ValueError:
+            print('Escolha envalida. Digite de 1 a 3.')
+
+    time.sleep(3)
+    if esco_loja == 1: 
+        print('Bem-vindo à loja do ferreiro!')
+        print('-='*14, '=-'*14)
+        print(f'M.Bronze: {moeda_bronze}')
+        print(f'M.Prata: {moeda_prata}')
+        print(f'M.Ouro: {moeda_ouro}')
+        print('-='*14, '=-'*14)
+        print(f'1) Forjar Espada          (+5 de dano)         - M.Prata: $25')
+        print(f'2) Melhorar Armadura      (+1 defesa)          - M.Prata: $30')
+        print(f'3) runa de safira         (+10 defesa)         - M.Ouro: $20')
+        print(f'4) Reparar Armadura       (bônus t. de defesa) - M.Prata: $10')
+        print(f'5) Criar Escudo           (+5 defesa)          - M.Ouro: $5')
+        print(f'6) Afiar Armas            (bônus t. de ataque) - M.Prata: $15')
+        print(f'7) Melhorar Espada        (+1 de dano)         - M.Prata: $10')
+        print(f'8) Afiação de Furtif E. K (+5% DE Critico)     - M.Ouro: $20')
+        print('-='*14, '=-'*14)
+        while True:
+            try:
+                esco_loja = int(input('O que você deseja (9 sair): '))
+                if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                    if esco_loja == 1 and moeda_prata >= 25 and espada_forjada == False:
+                        dano_base_j += 5
+                        moeda_prata -= 25
+                        espada_forjada = True
+                        print('Espada Forjada!')
+                    elif esco_loja == 2 and moeda_prata >= 30:
+                        escudo_base_j += 1
+                        moeda_prata -= 30
+                        print('Armadura Melhorada!')
+                    elif esco_loja == 3 and moeda_ouro >= 20 and Runa_adiquirida == False:
+                        escudo_base_j += 10
+                        moeda_ouro -= 20
+                        Runa_adiquirida = True
+                        print('Runa adiquirida!')
+                    elif esco_loja == 4 and moeda_prata >= 10:
+                        escudo_bonus += 30
+                        moeda_prata -= 10
+                        print('Seus Equipamento foram Reparados! ')
+                    elif esco_loja == 5 and moeda_ouro >= 5 and escudo_criado == False:
+                        escudo_base_j += 5
+                        moeda_ouro -= 5
+                        escudo_criado = True
+                        print('Escudo Criado!')
+                    elif esco_loja == 6 and moeda_prata >= 15:
+                        dano_bonus += 30
+                        moeda_prata -= 15
+                        print('Arma Afiada!')
+                    elif esco_loja == 7 and moeda_prata >= 10:
+                        dano_base_j += 1
+                        moeda_prata -= 10
+                        print('Melhoramento de Espada Concluido!')
+                    elif esco_loja == 8 and moeda_ouro >= 20 and espada_aprimorada == False:
+                        ctco += 1
+                        moeda_ouro -= 20
+                        espada_aprimorada = True
+                        print('Espada Aprimorada!')
+                    elif esco_loja == 9:
+                        print('Você saio da loja')
+                        break 
+                    else:
+                        print('Moedas insuficiente ou item ja criado!')
+                else:
+                    print('Escolha envalida. Digite de 1 a 9!.')
+            except ValueError:
+                print('Escolha envalida. Digite de 1 a 9!.')
+
+    if esco_loja == 2:
+        print('Bem Vindo a loja do feiticeiro!')
+        print('-='*14, '=-'*14)
+        print(f'M.Bronze: {moeda_bronze}')
+        print(f'M.Prata: {moeda_prata}')
+        print(f'M.Ouro: {moeda_ouro}')
+        print('-='*14, '=-'*14)
+        print(f'1) Forjar cajado            (+5 de dano magico)   - M.Prata: $55')
+        print(f'2) Melhorar manto           (+2 defesa)           - M.Prata: $50')
+        print(f'3) Encantar Equipamento     (+1 dano m. e defesa) - M.Ouro: $20')
+        print(f'4) benção do gardião        (bônus t. de defesa)  - M.Prata: $500')
+        print(f'5) Criar manto de proteção  (+5 defesa)           - M.Ouro: $10')
+        print(f'6) benção do deus da guerra (bônus t. de ataque)  - M.Prata: $500')
+        print(f'7) Melhorar cajado          (+2 de dano magico)   - M.Prata: $70')
+        print(f'8) Criar Joias de Poder     (-5 perda de mana)    - M.Ouro: $20')
+        print('-='*14, '=-'*14)
+        while True:
+            try:
+                esco_loja = int(input('O que você deseja (9 sair): '))
+                if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                    if esco_loja == 1 and moeda_prata >= 55 and cajado_criado == False:
+                        dano_magia_j += 5
+                        moeda_prata -= 55
+                        cajado_criado = True
+                        print('cajado Forjada!')
+                    elif esco_loja == 2 and moeda_prata >= 50:
+                        if manto_criardo == True:
+                            escudo_base_j += 2
+                            moeda_prata -= 50
+                            print('Manto Melhorada!')
+                        else:
+                            print('Você nao possui o manto')
+                    elif esco_loja == 3 and moeda_ouro >= 20:
+                        dano_magia_j += 1
+                        moeda_ouro -= 20
+                        print('Equipamento Encantado!')
+                    elif esco_loja == 4 and moeda_prata >= 500:
+                        escudo_bonus += 50
+                        moeda_prata -= 500
+                        print('Você recebeu a benção do Guardião! ')
+                    elif esco_loja == 5 and moeda_ouro >= 10 and manto_criardo == False:
+                        escudo_base_j += 5
+                        moeda_ouro -= 10
+                        manto_criardo = True 
+                        print('Manto Criado!')
+                    elif esco_loja == 6 and moeda_prata >= 500:
+                        dano_bonus += 50
+                        moeda_prata -= 500
+                        print('Você recebeu a benção do Deus da guerra!')
+                    elif esco_loja == 7 and moeda_prata >= 70:
+                        dano_magia_j += 2
+                        escudo_base_j += 2
+                        moeda_prata -= 70
+                        print('Melhoramento de do cajado Concluido!')
+                    elif esco_loja == 8 and moeda_ouro >= 20 and joia_criada == False:
+                        perda_mana_base_j -= 5
+                        moeda_ouro -= 20
+                        joia_criada = True
+                        print('Joia do Poder Criada!')
+                    elif esco_loja == 9:
+                        print('Você saio da loja')
+                        break 
+                    else:
+                        print('Moedas insuficiente ou item ja criado!')
+                else:
+                    print('Escolha envalida. Digite de 1 a 9.')
+            except ValueError:
+                print('Escolha envalida. Digite de 1 a 9.')
+
+    if esco_loja == 3:
+        print('Bem Vindo a loja de Ervas e Poções')
+        print('-='*14, '=-'*14)
+        print(f'M.Bronze: {moeda_bronze}')
+        print(f'M.Prata: {moeda_prata}')
+        print(f'M.Ouro: {moeda_ouro}')
+        print('-='*14, '=-'*14)
+        print(f'1) poção de cura       (+1 pocao C.)     - M.Prata: $20')
+        print(f'2) poção de mana       (+1 pocao M.)     - M.Prata: $30')
+        print(f'3) poção de adenalina  (-2 p. de mana)   - M.Prata: $40')
+        print(f'4) Poção de Agilidade  (+1 precisão)     - M.Prata: $60')
+        print(f'5) raízes revigorantes (iten de criação) - M.Prata: $10')
+        print(f'6) Cogumelo Brilhante  (iten de criação) - M.Prata: $15')
+        print(f'7) Erva-de-São-João    (iten de criação) - M.Prata: $20')
+        print(f'8) Rhodiola rosea      (iten de criação) - M.Prata: $30')
+        print('-='*14, '=-'*14)
+        while True:
+            try:
+                esco_loja = int(input('O que você deseja (9 sair): '))
+                if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                    if esco_loja == 1 and moeda_prata >= 20:
+                        pocao_cura += 1
+                        moeda_prata -= 20
+                        print(f'Poção adiquirida! {pocao_cura}')
+                    elif esco_loja == 2 and moeda_prata >= 30:
+                        pocao_mana += 1
+                        moeda_prata -= 30
+                        print(f'Poção adiquirida! {pocao_mana}')
+                    elif esco_loja == 3 and moeda_prata >= 40:
+                        pocao_adrenalina += 1
+                        moeda_prata -= 40
+                        print(f'Poção adiquirida! {pocao_adrenalina}')
+                    elif esco_loja == 4 and moeda_prata >= 60:
+                        pocao_agilidade += 1
+                        moeda_prata -= 60
+                        print(f'Poção adiquirida! {pocao_agilidade}')
+                    elif esco_loja == 5 and moeda_prata >= 10:
+                        itens["raízes revigorantes"] += 1
+                        moeda_prata -= 10
+                        print('Iten, raízes revigorantes adiquirida!')
+                    elif esco_loja == 6 and moeda_prata >= 15:
+                        itens["Cogumelo Brilhante"] += 1
+                        moeda_prata -= 15
+                        print('Iten, Cogumelo Brilhante adiquirida!')
+                    elif esco_loja == 7 and moeda_prata >= 20:
+                        itens["Erva-de-São-João"] += 1
+                        moeda_prata -= 20
+                        print('Iten, Erva-de-São-João adiquirida!')
+                    elif esco_loja == 8 and moeda_prata >= 30:
+                        itens["Rhodiola rosea"] += 1
+                        moeda_prata -= 30
+                        print('Iten, Rhodiola rosea adiquirida!')
+                    elif esco_loja == 9:
+                        print('Você saio da loja')
+                        break 
+                    else:
+                        print('Moedas insuficiente!')
+                else:
+                    print('Escolha envalida. Digite de 1 a 9!.')
+            except ValueError:
+                print('Escolha envalida. Digite de 1 a 9!.')
+
+# Bonus de poder
+def buffs(): 
+    global dano_bonus, escudo_bonus, dano_base_j, escudo_base_j
+    global ata, esc
+    
+    if dano_bonus < 0 and ata == False :
+        dano_base_j += int(dano_base_j * 0.10)
+        ata = True
+    elif dano_bonus == 0 and ata == True:
+        dano_base_j -= int(dano_base_j * 0.10)
+        ata = False
+    if dano_bonus > 0:
+        dano_bonus -= 1
+
+    if escudo_bonus < 0 and esc == False :
+        escudo_base_j += int(escudo_base_j * 0.10)
+        esc = True
+    elif escudo_bonus == 0 and esc == True:
+        escudo_base_j -= int(escudo_base_j * 0.10)
+        esc = False
+    if escudo_bonus > 0:
+        escudo_bonus -= 1
+
+    return dano_bonus, escudo_bonus, dano_base_j, escudo_base_j
+
+def recupera_mana_i():
+    global mana_inimigo,dado_i
+    print('inimigo tenta recupera mana...')
+    if mana_inimigo < mana_max_i:
+        mana_inimigo = min(mana_inimigo + mana_i, mana_max_i)  # Garantir que mana não exceda 100
+        print(f'inimigo recuperou mana ({mana_i}) MP.')
+    else:
+        print('inimigo sua mana está cheia.')
+    return mana_inimigo
+def recupera_mana_j():
+    global mana_jogador,dado_j,pocao_mana
+    print('Jogador tenta recupera mana...')
+    if pocao_mana > 0 and mana_jogador < mana_max_j:
+        mana_jogador = min(mana_jogador + mana_j, mana_max_j)  # Garantir que mana não exceda 100
+        pocao_mana -= 1
+        print(f'Jogador recuperou mana ({mana_j} MP). Poções restantes: {pocao_mana}')
+    else:
+        print('Você não tem poções de mana ou sua mana está cheia.')
+    return mana_jogador, pocao_mana
+        
+def recupera_vida_i():
+    global vida_inimigo,dado_i
+    print('inimigo tenta se cura...')
+    if vida_inimigo < vida_max_i: 
+        vida_inimigo = min(vida_inimigo + cura_i, vida_max_i)  # Garantir que vida não exceda vida maxima
+        print(f'inimigo se curou ({cura_i}) HP.')
+    else:
+        print('inimigo sua vida está cheia.')
+    return vida_inimigo
+def recupera_vida_j(): 
+    global vida_jogador,dado_j,pocao_cura
+    print('Jogador tenta se cura...')
+    if pocao_cura > 0 and vida_jogador < vida_max_j: 
+        vida_jogador = min(vida_jogador + cura_j, vida_max_j)  # Garantir que vida não exceda 100
+        pocao_cura -= 1
+        print(f'Jogador se curou ({cura_j} HP). Poções restantes: {pocao_cura}')
+    else:
+        print('Você não tem poções de cura ou sua vida está cheia.')
+    return vida_jogador, pocao_cura
+
+def esquiv_i():
+    global esquiva_i, dado_i, estamina_inimigo, mana_inimigo, perda_estamina_i
+    if estamina_inimigo >= perda_estamina_i:
+        estamina_inimigo -= perda_estamina_i
+        print('inimigo tenta esquiva...')
+        if dado_i >= 10:
+            esquiva_i = True
+        else:
+            print('inimigo falha em esquivar')
+            mana_inimigo -= 2 * perda_mana_i
+    else:
+        print('inimigo está sem estamina para esquivar')
+    return esquiva_i, estamina_inimigo, mana_inimigo
+def esquiv_j():
+    global esquiva_j, dado_j, estamina_jogador, mana_jogador,perda_estamina_j
+    if estamina_jogador >= perda_estamina_j:
+        estamina_jogador -= perda_estamina_j
+        print('jogador tenta esquiva...')
+        if dado_j >= 10:
+            esquiva_j = True
+        else:
+            print('jogador falha em esquivar')
+            mana_jogador -= 2 * perda_mana_j
+    else:
+        print('jogador está sem estamina para esquivar')
+    return esquiva_j, estamina_jogador, mana_jogador
+
+def defes_i():
+    global defesa_i,dado_i
+    print('inimigo tenta defende...')
+    if dado_i >= 10:
+        defesa_i = True
+    else:
+        print('inimigo falha em defende')  
+    return defesa_i
+def defes_j():
+    global defesa_j,dado_j
+    print('jogador tenta defende...')
+    if dado_j >= 10:
+        defesa_j = True
+    else:
+        print('jogador falha em defende')
+    return defesa_j            
+
+def ataqu_i():
+    global dado_i, dano_i, defesa_j, esquiva_j, escudo_efetivo_j, vida_jogador, estamina_inimigo, perda_estamina_i
+    if estamina_inimigo >= perda_estamina_i:
+        estamina_inimigo -= perda_estamina_i
+    else:
+        dano_i //= 2
+        escudo_efetivo_i //= 2
+        print('inimigo está cansado, dano e escudo reduzidos pela metade')
+    
+    print('inimigo tenta atacar...')
+    if dado_i >= 10:
+        if defesa_j:
+            print('jogador defende-se')
+            dano = max(dano_i - escudo_efetivo_j, 0)
+            vida_jogador -= dano
+            print(f"jogador recebeu {dano} de dano")
+        elif esquiva_j == True:
+            print('jogador esquivou-se')
+        else:
+            vida_jogador -= dano_i
+            print(f"inimigo acerta {dano_i} de dano")
+    else:
+        print('inimigo falhou em atacar')
+    return vida_jogador, estamina_inimigo
+def ataqu_j():
+    global dado_j, dano_j, defesa_i, esquiva_i, escudo_efetivo_i, vida_inimigo, estamina_jogador, perda_estamina_j, armadura_j
+    if estamina_jogador >= perda_estamina_j:
+        estamina_jogador -= perda_estamina_j
+    else:
+        dano_j //= 2
+        escudo_efetivo_j //= 2
+        print('jogador está cansado, dano e escudo reduzidos pela metade')
+    
+    print('jogador tenta atacar...')
+    if dado_j >= 10:
+        if defesa_i:
+            dano = max((dano_j - escudo_efetivo_i)- armadura_i, 0)
+            vida_inimigo -= dano
+            print(f'inimigo defende-se, mas leva {dano} de dano')
+        elif esquiva_i:
+            print('inimigo esquivou-se')
+        else:
+            dano =  int(dano_j - (armadura_i * dano_j) / 100)
+            vida_inimigo -= dano
+            print(f'jogador acerta {dano_j} de dano')
+    else:
+        print('jogador falhou em atacar')
+    return vida_inimigo, estamina_jogador
+
+def laça_magia_i():
+    global afinidade_i, dado_i, mana_inimigo, perda_mana_i, magia_especial_i, vida_jogador
+    global escudo_efetivo_j, esquiva_j, defesa_j, estamina_inimigo, perda_estamina_i, dano_i
+    if estamina_inimigo >= perda_estamina_i:
+        estamina_inimigo -= perda_estamina_i
+    else:
+        dano_i // 2
+        escudo_efetivo_j //= 2
+        print('inimigo está cansado, dano e escudo reduzidos pela metade')
+
+    print(f'inimigo tenta lança {afinidade_i}...')
+    if mana_inimigo < 15:
+        print(f'inimigo esta sem mana')
+    elif dado_i >= 15:
+        mana_inimigo -= perda_mana_i
+        if defesa_j == True:
+            vida_jogador -= max(magia_especial_i - escudo_efetivo_j, 0)
+            print('jogador defendeu ')
+        elif esquiva_j == True:
+            print('jogador esquivou-se')
+        else:
+            vida_jogador -= magia_especial_i
+            print(f'inimigo acerta {afinidade_i} e causa {dano_magia_i} de dano')
+    else:
+        mana_inimigo -= perda_mana_j
+        print(f'inimigo falhou em lançar {afinidade_i}')
+    return vida_jogador, mana_inimigo
+def laça_magia_j():
+    global afinidade_j,dado_j,mana_jogador,perda_mana_j,magia_especial_j,vida_inimigo
+    global escudo_efetivo_i,esquiva_i,defesa_i, perda_estamina_j, estamina_jogador
+    if estamina_jogador >= perda_estamina_j:
+        estamina_jogador -= perda_estamina_j
+    else:
+        dano_j //= 2
+        escudo_efetivo_i //= 2
+        print('jogador está cansado, dano e escudo reduzidos pela metade')
+    
+    print(f'jogador tenta lança {afinidade_j}...')
+    if mana_jogador < 15:
+        print(f'jogador esta sem mana')
+    elif dado_j >= 15:
+        mana_jogador -= perda_mana_j
+        if defesa_i == True:
+            vida_inimigo -= max(magia_especial_j - escudo_efetivo_i, 0)
+            print('inimigo defende-se')
+        elif esquiva_i == True:
+            print('inimigo esquivou-se')
+        else:
+            vida_inimigo -= magia_especial_j
+            print(f'jogador acerta {afinidade_j}  e causa {dano_magia_j} de dano')
+    else:
+        mana_jogador -= perda_mana_j
+        print(f'jogador falhou em lançar {afinidade_j} ou esta sem mana')
+    return vida_inimigo, mana_jogador, estamina_jogador
+
+def abilidade():
+    global dado_j, turno
+    if turno <= 2:
+        print('Habilidade ativada!')
+        dado_j = 20
+    return dado_j, turno
+# Combate com os inimigos 
+encontrado = False
+def combate():
+    global vida_inimigo, vida_jogador, mana_jogador, mana_inimigo, afinidade_j, turno, nome_inimigo 
+    global estamina_jogador, estamina_inimigo, pocao_mana, pocao_cura, dificuldade, dano_magia_i
+    global dado_i, afinidade_j, jogador_nivel, inimigo_nivel, vida_max_j, mana_max_j, estamina_max_j 
+    global vida_max_i, mana_max_i, estamina_max_i, dano_j, perda_estamina_j, magia_especial_j 
+    global dano_i, perda_estamina_i, magia_especial_i, critico, ataque, escudo, ctco
+    global defesa_j, esquiva_j, defesa_i, esquiva_i, encontrado, abilidade_100
+
+    # Função de aleatoriedade para inimigos e jogadores
+    buffs()
+    print(dano_bonus,escudo_bonus)
+    aleatoridade_i()
+    aleatoridade_j()
+    abilidade()
+
+    
+    defesa_j = False
+    esquiva_j = False
+    defesa_i = False
+    esquiva_i = False
+
+    print('--'*7, f'turno {turno}', '--'*7)
+    print(f"Nome:     {'HEROI':<5}         {nome_inimigo:>5}")
+    print(F'Nivel:    {jogador_nivel:<5}     {inimigo_nivel:>5}')
+    print(f"Vida:     {vida_jogador}/{vida_max_j:<5}   {vida_inimigo:>5}/{vida_max_i}")
+    print(f"Mana:     {mana_jogador}/{mana_max_j:<5}   {mana_inimigo:>5}/{mana_max_i} ")
+    print(f"Estamina: {estamina_jogador}/{estamina_max_j:<5}   {estamina_inimigo:>5}/{estamina_max_i}\n")
+    print(f'1) {ataque}    2) {escudo}\n3) Esquiva   4) {afinidade_j}\n5) Cura      6) Restaurar mana\n')
+    
+    # Escolha da ação do jogador
+    while True:
+        try:
+            jogador = int(input('Digite um número: '))
+            if jogador in [0, 1, 2, 3, 4, 5, 6]:
+                break
+            else:
+                print("Escolha inválida. Digite um número entre 1 e 6.")
+        except ValueError:
+            print("Entrada inválida. Digite um número entre 1 e 6.")
+
+    
+    if jogador == 0:
+        print('Você decide não fazer nada')
+    elif jogador == 1:
+        ataqu_j()
+    elif jogador == 2:
+        defes_j()
+    elif jogador == 3:
+        esquiv_j()
+    elif jogador == 4:
+        laça_magia_j()        
+    elif jogador == 5:
+        recupera_vida_j()
+    elif jogador == 6:
+        recupera_mana_j()
+
+    if jogador in (1,4):
+        if dado_j > (19- ctco):
+            critic = int(critico * dano_j) if jogador == 1 else int(critico * magia_especial_j)
+            vida_inimigo -= (dano_j + critic)
+            print('+',critic)
+
+    inimigo = randint(1, 6)
+    if inimigo == 1:
+        ataqu_i()
+    elif inimigo == 2:
+        defes_i()
+    elif inimigo == 3:
+        esquiv_i()
+    elif inimigo == 4:
+        laça_magia_i()
+    elif inimigo == 5:
+        recupera_vida_i()
+    elif inimigo == 6:
+        recupera_mana_i()
+    
+    if inimigo in (1,4):
+        if dado_i > 19:
+            c = int(dano_i * 0.4) if inimigo == 1 else int(dano_magia_i * 0.4)  # 40% do dano total
+            vida_jogador -= c
+            print('+', c)
+
+
+while True:
+    aleatoridade_j()
+    aleatoridade_i()
+
+    if not encontrado:
+        if jogador_nivel <= 2:
+            N = 100
+        elif jogador_nivel >= 25:
+            N = 300
+        else:
+            N = 90
+
+        # Filtra inimigos compatíveis com o nível do jogador
+        inimigos_disponiveis = {
+            nome: dados for nome, dados in capitulo_atual.items()
+            if dados['vida'] // N <= jogador_nivel
+        }
+        lacaio = 0
+        if inimigos_disponiveis:
+            if encontrado == False:
+                nome_inimigo = random.choice(list(inimigos_disponiveis.keys()))
+                dados_inimigo = inimigos_disponiveis[nome_inimigo]
+                vida_inimigo = dados_inimigo['vida']
+                vida_max_i = vida_inimigo
+                xp_min = dados_inimigo['xp_min']
+                xp_max = dados_inimigo['xp_max']
+
+                # Ajusta atributos do inimigo
+                ultimo_monstro = obter_ultimo_monstro(capitulo_atual)
+                nivel_i = random.randint(max(1, jogador_nivel - 3), jogador_nivel + 4)
+                if ultimo_monstro: 
+                    nivel_i = random.randint(max(1, jogador_nivel + 2), jogador_nivel + 5)
+                inimigo_nivel = nivel_i
+
+            # Reseta os atributos antes de adicionar
+            escudo_base_i = 8
+            dano_base_i = 12
+            forca_base_i = 15
+            eficiencia_cura_i = 15
+            eficiencia_mana_i = 15
+            mana_max_i = 100  # Valor base
+            mana_inimigo = mana_max_i
+            estamina_max_i = 100 + (nivel_i * 40)  # Define com base no nível
+            estamina_inimigo = estamina_max_i  # Estamina cheia ao iniciar
+            escolha_magia_i()
+            i = 0
+            while i < nivel_i:  # Agora executa nivel_i vezes
+                escudo_base_i += 4 
+                dano_base_i += 4
+                forca_base_i += 5  
+                eficiencia_cura_i += 2
+                eficiencia_mana_i += 2
+                mana_max_i += 30
+                estamina_max_i += 40
+                i += 1 
+
+            mana_inimigo = mana_max_i  # Ajustar mana com base no nível
+            estamina_inimigo = estamina_max_i  # Corrige a estamina
+            
+            evento = randint(1,10)
+            if encontrado == True:
+                None
+            elif evento >= 5:
+                encontrado = True
+            else:    
+                andando()
+        else:
+            print("Nenhum inimigo encontrado.")
+    if encontrado:
+        # Certifique-se de que combate() está retornando valores corretamente
+        try:
+            turno += 1
+            combate()
+        except Exception as e:
+            print(f"Erro ao executar combate(): {e}")
+    
+    # Verificar condições de fim de combate
+    if vida_inimigo <= 0 and encontrado == True:
+        if vida_inimigo <= 0:
+            mortes_inimigos += 1
+        encontrado = False
+        turno = 0
+        
+        print('-='*6,'=-'*6)
+        print('      Jogador Venceu')
+        print('-='*6,'=-'*6,'\n')
+        nivel_j()
+
+        # Verificar se pasou de capitulo
+        nome_inimigo_derrotado = nome_inimigo
+        if avancar_capitulo(capitulo_atual, nome_inimigo_derrotado):
+            indice_capitulo_atual += 1
+            if indice_capitulo_atual < len(capitulos):
+                capitulo_atual = capitulos[indice_capitulo_atual]
+            elif capitulo_atual == capitulo_final:
+                print('\nVocê ganhou o jogo')
+                print('      ,o0%%%%%%0o. ')
+                print('     d     __  ~  b')
+                print("     I  .o'  'o.  I")
+                print('     I ´|  #   |< I')
+                print('     I  |      |  I')
+                print('     I  |    # |  I')
+                print('     I- | ~    | :I')
+                print('     I  |      |  I  ')
+                print(" .--.I  '*+__+*'  I.--.")
+                print(' @  @I_ __________I@  @')
+                print(' |  |/____________\|  |')
+                print(" |   ¨*V########?°'   |")
+                print(' |  ´           -     |')
+                print(' |-     `     °    -  |')
+                print('J%____________________%L')
+                break
+        
+    if vida_jogador <= 0:
+        print('Jogador Pereceu')
+        break
+
+    #time.sleep(tempo)
