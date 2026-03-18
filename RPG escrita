@@ -1,11 +1,11 @@
-from random import randint c
+from random import randint 
 import random
 import time
 
 dificuldade = 0 # dificuldade
 
 # jogador
-vida_jogador = 100  # Vida inicial do jogador
+vida_jogador = 100000  # Vida inicial do jogador
 vida_max_j = 100  # Vida maxima do jogador
 mana_jogador = 50  # Mana inicial do jogador
 mana_max_j = 50  # Mana maxima do jogador
@@ -54,7 +54,7 @@ moeda_ouro = 0
 
 # Nivel
 inimigo_nivel = 1
-jogador_nivel = 1
+jogador_nivel = 60
 xp_atual = 0
 xp_proximo_nivel = 20
 xp_min = 0
@@ -80,6 +80,7 @@ sangramento_i = 0
 
 mortes_inimigos = 0 # Contador de mortes 
 turno = 0  # Contador de turnos
+final = 0
 
 # Função para evento 
 cavalo = False
@@ -91,6 +92,8 @@ defesa_j = False
 esquiva_j = False
 defesa_i = False
 esquiva_i = False
+cristal = False
+escolha_definitiva = ''
 
 #cidade
 espada_aprimorada = False
@@ -100,6 +103,7 @@ escudo_criado = False
 cajado_criado = False
 manto_criardo = False 
 joia_criada = False
+apresentacao_pause = False
 ctco = 0
 itens = {'Raízes Revigorantes':0,
         'Cogumelo Brilhante':0,
@@ -553,10 +557,19 @@ def evento_aleatorio():
 
     elif evento == 25:
         if cavalo == False:
-            print("Você encontrou um cavalo selvagem e decidiu domá-lo!")
-            print("Agora você cansara menos na viajem.")
-            energia = 0.03
-            cavalo = True
+            print("Você encontrou um cavalo selvagem!")
+            try:
+                escolha = str(input('Domar-lo S/N')).upper()
+                if 'S':
+                    print("Agora você cansara menos na viajem.")
+                    energia = 0.03
+                    cavalo = True
+                else:
+                    print('Voce continua sua jornada andando')
+
+            except ValueError:
+                print("digite entre (1 e 2).")
+
         else:
             print('você avista alguns cavalos pastando.')
     elif evento == 26:
@@ -625,6 +638,8 @@ def andando():
     global indice_capitulo_atual, agilidade_bonus, adrenalina_bonus, abilidade_100,itens
     global pocao_adrenalina, pocao_agilidade
 
+    if capitulo_atual == 9:
+        return
     while True:
         print(f'estamina: {estamina_jogador}')
         print('\nO que você deseja fazer?')
@@ -778,74 +793,75 @@ def andando():
 
 # Definindo os capítulos com os inimigos
 capitulo_1 = {
-    "zumbi": {"vida": 50, "xp_min": 10, "xp_max": 20},
-    "esqueleto": {"vida": 80, "xp_min": 15, "xp_max": 30},
-    "fantasma": {"vida": 120, "xp_min": 20, "xp_max": 40},
-    "vampiro": {"vida": 180, "xp_min": 30, "xp_max": 60},
-    "lich": {"vida": 250, "xp_min": 50, "xp_max": 100}
+    "Zumbi": {"vida": 50, "xp_min": 10, "xp_max": 20},
+    "Esqueleto": {"vida": 80, "xp_min": 15, "xp_max": 30},
+    "Fantasma": {"vida": 120, "xp_min": 20, "xp_max": 40},
+    "Vampiro": {"vida": 180, "xp_min": 30, "xp_max": 60},
+    "Lich": {"vida": 250, "xp_min": 50, "xp_max": 100}
 }
 
 capitulo_2 = {
-    "kobold_xama": {"vida": 200, "xp_min": 40, "xp_max": 80},
-    "mago_sombrio": {"vida": 280, "xp_min": 60, "xp_max": 120},
-    "elemental_fogo": {"vida": 350, "xp_min": 80, "xp_max": 160},
-    "djinn": {"vida": 450, "xp_min": 100, "xp_max": 200},
-    "dragao_arcano": {"vida": 800, "xp_min": 200, "xp_max": 400}
+    "Kobold Xama": {"vida": 200, "xp_min": 40, "xp_max": 80},
+    "mago Sombrio": {"vida": 280, "xp_min": 60, "xp_max": 120},
+    "Elemental do Fogo": {"vida": 350, "xp_min": 80, "xp_max": 160},
+    "Djinn": {"vida": 450, "xp_min": 100, "xp_max": 200},
+    "Dragão Arcano": {"vida": 800, "xp_min": 200, "xp_max": 400}
 }
 
 capitulo_3 = {
-    "slime": {"vida": 250, "xp_min": 30, "xp_max": 60},         
-    "goblin": {"vida": 320, "xp_min": 50, "xp_max": 100},                                               
-    "aranha_gigante": {"vida": 450, "xp_min": 70, "xp_max": 140}, 
-    "ogro": {"vida": 600, "xp_min": 90, "xp_max": 180},        
-    "mimico": {"vida": 1000, "xp_min": 120, "xp_max": 240}     
+    "Slime": {"vida": 250, "xp_min": 30, "xp_max": 60},         
+    "Goblin": {"vida": 320, "xp_min": 50, "xp_max": 100},                                               
+    "Aranha Gigante": {"vida": 450, "xp_min": 70, "xp_max": 140}, 
+    "Ogro": {"vida": 600, "xp_min": 90, "xp_max": 180},        
+    "Mimico": {"vida": 1000, "xp_min": 120, "xp_max": 240}     
 }
 
 capitulo_4 = {
-    "cervo_sombrio": {"vida": 500, "xp_min": 80, "xp_max": 160},
-    "urso_coruja": {"vida": 650, "xp_min": 120, "xp_max": 240},  
-    "lobisomem": {"vida": 800, "xp_min": 160, "xp_max": 320},   
-    "javali_demoníaco": {"vida": 950, "xp_min": 200, "xp_max": 400},
-    "troll": {"vida": 1500, "xp_min": 250, "xp_max": 500}       
+    "Cervo Sombrio": {"vida": 500, "xp_min": 80, "xp_max": 160},
+    "Urso Coruja": {"vida": 650, "xp_min": 120, "xp_max": 240},  
+    "Lobisomem": {"vida": 800, "xp_min": 160, "xp_max": 320},   
+    "Javali Demoníaco": {"vida": 950, "xp_min": 200, "xp_max": 400},
+    "Troll": {"vida": 1500, "xp_min": 250, "xp_max": 500}       
 }
 
 capitulo_5 = {
-    "enguia_eletrica": {"vida": 800, "xp_min": 120, "xp_max": 240},
-    "sereia_sombria": {"vida": 1000, "xp_min": 180, "xp_max": 360},
-    "tubarao_abissal": {"vida": 1200, "xp_min": 250, "xp_max": 500},
-    "espirito_agua": {"vida": 1400, "xp_min": 220, "xp_max": 440},
-    "kraken": {"vida": 2000, "xp_min": 500, "xp_max": 1000}
+    "Enguia Eletrica": {"vida": 800, "xp_min": 120, "xp_max": 240},
+    "Sereia Sombria": {"vida": 1000, "xp_min": 180, "xp_max": 360},
+    "Tubarao Abissal": {"vida": 1200, "xp_min": 250, "xp_max": 500},
+    "Espírito Água": {"vida": 1400, "xp_min": 220, "xp_max": 440},
+    "Kraken": {"vida": 2000, "xp_min": 500, "xp_max": 1000}
 }
 
 capitulo_6 = {
-    "demonio_menor": {"vida": 1000, "xp_min": 100, "xp_max": 200},
-    "cao_infernal": {"vida": 1200, "xp_min": 180, "xp_max": 360},
-    "succubus_incubus": {"vida": 1500, "xp_min": 250, "xp_max": 500},
-    "gargula": {"vida": 1700, "xp_min": 350, "xp_max": 700},
-    "archdemon": {"vida": 2500, "xp_min": 800, "xp_max": 1600}
+    "Demonio Menor": {"vida": 1000, "xp_min": 100, "xp_max": 200},
+    "Cão Infernal": {"vida": 1200, "xp_min": 180, "xp_max": 360},
+    "Succubus Incubus": {"vida": 1500, "xp_min": 250, "xp_max": 500},
+    "Gargula": {"vida": 1700, "xp_min": 350, "xp_max": 700},
+    "Archdemon": {"vida": 2500, "xp_min": 800, "xp_max": 1600}
 }
 
 lacaio_7 = {
-    "guardião corrompido": {"vida": 2600, "xp_min": 800, "xp_max": 1600},}
+    "Guardião Corrompido": {"vida": 2600, "xp_min": 800, "xp_max": 1600},}
 lacaio_8 = {
-    "cavaleiro do abismo": {"vida": 3000, "xp_min": 1000, "xp_max": 2000},}
+    "Cavaleiro do Abismo": {"vida": 3000, "xp_min": 1000, "xp_max": 2000},}
 lacaio_9 = {
-    "serafim_caido": {"vida": 4000, "xp_min": 1200, "xp_max": 2400},}
+    "Serafim Caido": {"vida": 4000, "xp_min": 1200, "xp_max": 2400},}
 
 capitulo_final = {
     "Malgethar": {"vida": 6000,"xp_min": 3000,"xp_max": 6000}}
 
 def obter_ultimo_monstro(capitulo):
+    global nome_inimigo
     chaves = list(capitulo.keys())
     if indice_capitulo_atual == 9:
         return chaves[0] if chaves else None
     else:
         return chaves[-1] if chaves else None
-
+    
 def avancar_capitulo(capitulo_atual, nome_inimigo_derrotado):
     ultimo_monstro = obter_ultimo_monstro(capitulo_atual)
     if nome_inimigo_derrotado == ultimo_monstro:
-        print(f"Você derrotou o {ultimo_monstro}!",end='')
+        print(f"Você derrotou o {ultimo_monstro}!",end='', flush=True)
         if capitulo_atual != capitulo_final:
             print(" Avançando para o próximo capítulo.\n")
         return True  # Indica que o jogador deve avançar de capítulo
@@ -854,20 +870,1376 @@ capitulos = [capitulo_1, capitulo_2, capitulo_3, capitulo_4, capitulo_5, capitul
 indice_capitulo_atual = 0
 capitulo_atual = capitulos[indice_capitulo_atual]
 
-hist = ['']
+hist = ['Capítulo 0 — O Dia em que o Céu Caiu\n'
+"O céu estava azul quando começou.\n"
+"Kael lembra disso. Ele estava correndo com uma espada de madeira na mão, fingindo ser um herói qualquer das histórias que ouvia escondido.\n"
+"Gritava ataques imaginários, pulava cercas, tropeçava na própria empolgação.\n"
+"A vila de Arandel era pequena, mas para ele era um reino inteiro.\n"
+"Então a luz mudou.\n"
+"Não escureceu de uma vez.\n"
+"Primeiro foi como se alguém tivesse diminuído o brilho do mundo.\n"
+"As sombras ficaram longas demais.\n"
+"O vento parou.\n"
+"Os pássaros silenciaram.\n"
+"E o céu... rachou.\n"
+"Não foi uma metáfora.\n"
+"Ele literalmente se partiu.\n"
+"Uma fissura negra se abriu acima das nuvens, espalhando veias escuras pelo azul.\n"
+"O som que veio depois não parecia trovão — parecia algo gigantesco respirando.\n"
+"As pessoas começaram a sair das casas.\n"
+"Alguém gritou.\n"
+"Uma coluna de energia desceu do rasgo e atingiu o chão.\n"
+"A explosão levantou terra, madeira e corpos.\n"
+"Kael caiu.\n"
+"Seus ouvidos apitaram.\n"
+"Quando conseguiu erguer a cabeça, viu silhuetas se formando dentro da fumaça.\n"
+"Criaturas tortas andando em quatro patas.\n"
+"Outras arrastando lâminas pelo chão.\n"
+"E no centro... ele.\n"
+"Uma figura alta envolta em uma capa que parecia feita de noite líquida.\n"
+"Dois olhos vermelhos abriram-se na escuridão.\n"
+"**Malgethar.**\n"
+"Mesmo criança, Kael entendeu que aquilo não era apenas um inimigo.\n"
+"Era algo acima disso.\n"
+"O Rei Demônio ergueu a mão.\n"
+"E o chão respondeu.\n"
+"Mortos se levantaram.\n"
+"Sombras ganharam forma.\n"
+"O mundo virou caos.\n"
+"Kael tentou correr até sua casa.\n"
+"Não conseguiu.\n"
+"Uma criatura atravessou o caminho.\n"
+"Seu pai apareceu na frente dele segurando uma espada que nunca tinha usado de verdade.\n"
+"— Não olha para trás. Corre.\n"
+"Kael correu.\n"
+"O último som que ouviu antes de entrar na floresta foi o impacto de algo colossal atingindo o chão.\n"
+"E o grito que nunca esqueceu.\n"
+"Quando amanheceu, não havia mais nada.\n"
+"Só fumaça no horizonte...\n"
+
+"...Dez anos depois...\n"
+"O som da lâmina cortando o ar é seco e preciso.\n"
+"Kael gira, avança, recua.\n"
+"O corpo já não é o de uma criança.\n"
+"Os movimentos são calculados.\n"
+"Ele treina sozinho em um campo aberto.\n"
+"Longe do assentamento onde os sobreviventes reconstruíram suas vidas.\n"
+"Dez anos.\n"
+"Dez anos desde que o céu caiu.\n"
+"As pessoas tentaram seguir em frente.\n"
+"Plantaram.\n"
+"Construíram.\n"
+"Fingiram que o Rei Demônio era um pesadelo distante.\n"
+"Mas Kael nunca fingiu.\n"
+"Ele ouviu os rumores.\n"
+"Cidades ao norte desapareceram.\n"
+"Criaturas começaram a surgir novamente nas estradas.\n"
+"Generais do Rei Demônio estavam se movendo.\n"
+"Ele finca a espada no chão e olha para o horizonte.\n"
+"As nuvens estão diferentes hoje.\n"
+"Mais densas.\n"
+"Mais pesadas.\n"
+"Ele sabe o que isso significa.\n"
+"Dessa vez... ele não é mais o garoto correndo com uma espada de madeira.\n"
+"Dessa vez ele está pronto para correr na direção do fogo...\n"
+
+"...Capítulo 1 — Ecos dos Mortos\n"
+"A primeira criatura apareceu ao amanhecer.\n"
+"Não houve gritos dessa vez.\n"
+"Só o som de passos arrastados na plantação.\n"
+"Um dos agricultores viu algo se mover entre o trigo.\n"
+"Pensou que fosse um animal.\n"
+"Chamou pelo nome do filho que estava ajudando na colheita.\n"
+"O filho não respondeu.\n"
+"Quando os outros chegaram perto encontraram o garoto parado no meio do campo.\n"
+"Imóvel.\n"
+"Encarando o nada.\n"
+"Os olhos estavam vazios.\n"
+"A pele... cinza.\n"
+"E então ele avançou.\n"
+"A notícia se espalhou rápido pelo assentamento.\n"
+"Pessoas correram para dentro de casa.\n"
+"Portas foram trancadas.\n"
+"Ferramentas viraram armas improvisadas.\n"
+"Kael não correu.\n"
+"Ele pegou a espada.\n"
+"Quando chegou ao campo já havia três deles.\n"
+"O garoto.\n"
+"Um velho.\n"
+"Uma mulher que tinha morrido de febre meses atrás.\n"
+"Todos de pé.\n"
+"Todos andando.\n"
+"O cheiro era o mesmo da noite de Arandel.\n"
+"Morte misturada com algo mais.\n"
+"Algo mágico.\n"
+"Kael avançou sem hesitar.\n"
+"O primeiro golpe foi limpo.\n"
+"A lâmina atravessou o corpo do velho.\n"
+"O segundo tentou agarrá-lo.\n"
+"Mas Kael girou o corpo e cortou o braço antes de finalizar.\n"
+"O terceiro...\n"
+"O garoto...\n"
+"Por um segundo Kael congelou.\n"
+"Foi tempo suficiente para a criatura avançar.\n"
+"Ele fechou os olhos no momento do golpe.\n"
+"Quando abriu o corpo já estava no chão.\n"
+"Silêncio.\n"
+"Mas o silêncio não durou.\n"
+"Mais passos começaram a ecoar além do campo.\n"
+"Não eram três.\n"
+"Não eram dez.\n"
+"E não estavam vindo sozinhos.\n"
+"Ao cair da noite eles cercaram o assentamento.\n"
+"Zumbis avançavam em grupos desorganizados.\n"
+"Entre eles esqueletos com armas enferrujadas.\n"
+"Kael organizou os poucos que sabiam lutar.\n"
+"Não havia muralhas.\n"
+"Não havia exército.\n"
+"Só medo...\n",
+
+"...Magia verde explodia pelo campo.\n"
+"Esqueletos surgiam da terra tentando cercar Kael.\n"
+"Mas o lich mantinha distância.\n"
+"Controlando tudo de longe.\n"
+"Kael percebeu rapidamente.\n"
+"— O corpo não importa...\n"
+"— O poder está no cajado.\n"
+"O lich lançou outra rajada de energia.\n"
+"Mas Kael avançou direto.\n"
+"Ignorando os mortos ao redor.\n"
+"Ele saltou sobre um zumbi.\n"
+"Girou o corpo.\n"
+"E atravessou a defesa do lich.\n"
+"A espada cortou o cajado ao meio.\n"
+"A chama verde nos olhos do lich tremulou.\n"
+"— Não...\n"
+"O corpo inteiro da criatura começou a rachar.\n"
+"A magia que mantinha os mortos vivos desapareceu.\n"
+"Os zumbis caíram no chão.\n"
+"O lich virou pó.\n"
+"E pela primeira vez naquela noite o assentamento ficou em silêncio.\n"
+"Kael olhou para o horizonte.\n"
+"— Isso foi só o começo...\n"
+
+"...Capítulo 2 — A Floresta que Não Dorme\n"
+"A estrada sumiu no meio das árvores.\n"
+"Kael parou na entrada da mata.\n"
+"Escuro.\n"
+"Quieto.\n"
+"Sem pássaro.\n"
+"Sem vento.\n"
+"Sem nada.\n"
+"Só mato crescido e troncos retorcidos.\n"
+"Ele entrou.\n"
+"No começo era só caminhar.\n"
+"Depois de algumas horas, as árvores começaram a mudar.\n"
+"Os troncos ficaram mais grossos.\n"
+"Os galhos mais baixos.\n"
+"E marcas.\n"
+"Arranhões fundos na casca.\n"
+"Na altura de ombro.\n"
+"Feitos por alguma coisa com garras ou mãos.\n"
+"Ele seguiu as marcas.\n"
+"A mata foi fechando.\n"
+"A luz sumindo.\n"
+"Quando ele percebeu, já estava no fundo da floresta.\n"
+"Onde o sol não chegava.\n"
+"As árvores tinham formato de gente.\n"
+"Não de verdade.\n"
+"Mas parecia.\n"
+"Galhos que imitavam braços.\n"
+"Troncos que pareciam corpos enterrados em pé.\n"
+"Kael ficou alerta e continuou.\n"
+"A clareira apareceu de repente.\n"
+"Pequena.\n"
+"Circular.\n"
+"No centro, um homem.\n"
+"Pele cinza.\n"
+"Olhos brancos.\n"
+"Sem pupila.\n"
+"Parado.\n"
+"Imóvel.\n"
+"Respirando devagar.\n"
+"Kael não hesitou.\n"
+"Puxou a espada.\n"
+"O homem avançou.\n"
+"O golpe veio rápido.\n"
+"Mais rápido do que Kael esperava.\n"
+"Ele desviou no último instante.\n"
+"Sentiu o vento no rosto.\n"
+"Ripostou.\n"
+"A lâmina pegou de raspão no ombro da criatura.\n"
+"Veio de novo.\n"
+"Braço duro como madeira.\n"
+"Varrendo na altura da cabeça.\n"
+"Kael abaixou.\n"
+"Girou.\n"
+"E cravou a espada fundo no peito dela.\n"
+"A criatura parou.\n"
+"Olhou para o cabo da arma enterrado em si.\n"
+"Depois para Kael.\n"
+"— Ah.\n"
+"O corpo desabou.\n"
+"Virou pó.\n"
+"Casca seca.\n"
+"Terra.\n"
+"Em segundos não restou nada.\n"
+"Kael ficou parado.\n"
+"Respirando pesado.\n"
+"Olhou em volta.\n"
+"A clareira estava vazia.\n"
+"A mata quieta.\n"
+"Ele limpou a lâmina na perna da calça.\n"
+"Guardou a espada.\n"
+"E seguiu em frente.\n"
+"Atrás dele, a floresta continuava escura.\n"
+"Mas agora silenciosa de verdade.\n"
+"O Senhor da Floresta Sombria\n",
+
+"O dragão atacou primeiro.\n"
+"Uma coluna de fogo explodiu da boca da criatura.\n"
+"Kael rolou para o lado no último segundo.\n"
+"O chão da clareira virou carvão.\n"
+"A criatura avançou.\n"
+"As garras rasgaram a terra onde Kael estava um instante antes.\n"
+"A força era absurda.\n"
+"Cada movimento fazia o chão tremer.\n"
+"Kael percebeu algo.\n"
+"O peito do dragão brilhava levemente entre as escamas.\n"
+"Um ponto mais claro.\n"
+"Mais frágil.\n"
+"A próxima investida veio como um trovão.\n"
+"O dragão abriu as asas para atacar.\n"
+"Kael correu direto na direção da criatura.\n"
+"Saltou sobre uma pedra quebrada.\n"
+"E usou o impulso para alcançar o peito da besta.\n"
+"A espada atravessou as escamas.\n"
+"Direto no ponto fraco.\n"
+"O rugido que veio depois ecoou por toda a floresta.\n"
+"A criatura tentou levantar voo.\n"
+"Mas o corpo perdeu força.\n"
+"O dragão caiu.\n"
+"O impacto levantou uma nuvem de poeira.\n"
+"O silêncio voltou lentamente para a floresta.\n"
+"O corpo colossal começou a perder o brilho dos olhos.\n"
+"A chama nas narinas desapareceu.\n"
+"Kael puxou a espada do corpo da criatura.\n"
+"Respirando pesado.\n"
+"A batalha tinha terminado.\n"
+"A floresta voltou a ficar silenciosa.\n"
+"Kael guardou a espada.\n"
+"E continuou caminhando.\n"
+"Mais fundo.\n"
+"Sempre em direção ao mesmo destino...\n"
+
+"...Capítulo 3 — A Masmorra Viva\n"
+"A entrada da masmorra parecia uma boca aberta na montanha.\n"
+"Pedra negra.\n"
+"Úmida.\n"
+"Antiga.\n"
+"Runas quase apagadas marcavam o arco de entrada.\n"
+"Como se alguém tivesse tentado selar aquele lugar…\n"
+"E falhado.\n"
+"Kael parou por um momento.\n"
+"O ar que saía dali de dentro era frio.\n"
+"Não era o frio natural da terra.\n"
+"Era um frio estranho.\n"
+"Pesado.\n"
+"Que lembrava magia antiga.\n"
+"Ele apertou o cabo da espada.\n"
+"— Então é aqui.\n"
+"Ele entrou.\n"
+"Os corredores da masmorra eram irregulares.\n"
+"Como se a própria montanha tivesse sido escavada à força.\n"
+"Água pingava do teto.\n"
+"Pequenos cogumelos brilhavam nas paredes.\n"
+"Iluminando o caminho com uma luz azul fraca.\n"
+"Marcas de garras nas paredes.\n"
+"Teias grossas cruzando corredores.\n"
+"Restos de ossos espalhados pelo chão.\n"
+"Kael avançou devagar.\n"
+"E então algo caiu do teto.\n"
+"Um slime.\n"
+"A massa gelatinosa se espalhou pelo chão.\n"
+"Como um líquido vivo.\n"
+"O slime se ergueu para envolvê-lo.\n"
+"Kael cravou a espada no núcleo da criatura.\n"
+"A massa gelatinosa colapsou.\n"
+"A batalha foi curta.\n"
+"Quando terminou o chão da masmorra estava quieto novamente.\n"
+"Kael limpou a lâmina.\n"
+"Ele olhou mais fundo no corredor escuro.\n"
+"— Esta masmorra está crescendo.\n"
+"E quanto mais fundo ele fosse…\n"
+"Mais perigoso ficaria.\n",
+
+"O mímico atacava como uma besta faminta.\n"
+"Cada mordida esmagava pedra.\n"
+"Kael desviava por pouco.\n"
+"A língua chicoteou e agarrou seu braço.\n"
+"Ele foi puxado direto para a boca da criatura.\n"
+"Os dentes começaram a fechar.\n"
+"Kael não tentou escapar.\n"
+"Em vez disso…\n"
+"Ele empurrou a espada direto na garganta do monstro.\n"
+"A lâmina atravessou madeira.\n"
+"Carne.\n"
+"E magia.\n"
+"O mímico gritou.\n"
+"A sala inteira tremeu.\n"
+"Kael empurrou a espada ainda mais fundo.\n"
+"— Acabou.\n"
+"A criatura explodiu em fragmentos de madeira e energia mágica.\n"
+"Silêncio.\n"
+"As runas da sala se apagaram lentamente.\n"
+"No centro da caverna algo pequeno caiu no chão.\n"
+"Um núcleo de masmorra quebrado.\n"
+"Kael pegou o cristal.\n"
+"Ele brilhava com uma luz fraca.\n"
+"— Então alguém estava alimentando essa masmorra…\n"
+"Ele olhou para a saída escura do corredor.\n"
+"— Isso não foi natural.\n"
+"Lentamente uma memória antiga voltou à sua mente.\n"
+"Criaturas mais fortes.\n"
+"Generais.\n"
+"Servos do Rei Demônio.\n"
+"Kael guardou o núcleo no bolso.\n"
+"— Se isso foi só o começo…\n"
+"Ele caminhou para fora da masmorra.\n"
+"— Então alguém está preparando o mundo para algo maior.\n"
+"No céu distante nuvens escuras começaram a se reunir novamente...\n"
+
+"# Capítulo 4 — A Floresta dos Predadores\n"
+"A saída da masmorra levou Kael para o outro lado da montanha.\n"
+"Ele não esperava isso.\n"
+"Do lado de fora não havia estrada.\n"
+"Nem campos.\n"
+"Nem vilas.\n"
+"Apenas mais floresta.\n"
+"Mas não era uma floresta comum.\n"
+"As árvores eram altas demais.\n"
+"Grossas demais.\n"
+"Antigas demais.\n"
+"A luz do sol mal atravessava as copas densas.\n"
+"Deixando o chão coberto por sombras constantes.\n"
+"Kael respirou fundo.\n"
+"O ar tinha cheiro de terra molhada.\n"
+"E sangue.\n"
+"Ele caminhou alguns metros.\n"
+"O silêncio da floresta não era natural.\n"
+"Não havia pássaros.\n"
+"Não havia insetos.\n"
+"Apenas o som distante de galhos quebrando.\n"
+"Como se algo grande estivesse andando por ali.\n"
+"Então ele viu.\n"
+"Pegadas.\n"
+"Grandes.\n"
+"Profundas.\n"
+"Kael se abaixou para observar.\n"
+"Ele se levantou.\n"
+"E continuou andando.\n"
+"Um som seco ecoou entre as árvores.\n"
+"CRACK\n"
+"Algo correu entre os troncos.\n"
+"Kael virou rapidamente.\n"
+"Um animal saltou da escuridão da mata.\n"
+"Chifres negros.\n"
+"Olhos vermelhos.\n"
+"Um corpo magro.\n"
+"Rápido demais para ser um animal normal.\n"
+"Um cervo sombrio.\n"
+"A criatura avançou como uma flecha.\n"
+"Kael desviou no último segundo.\n"
+"Sentindo os chifres passarem a centímetros do seu peito.\n"
+"O cervo girou rapidamente para atacar de novo.\n"
+"Mas Kael já estava preparado.\n"
+"Quando a criatura saltou outra vez.\n"
+"Ele deu um passo para o lado.\n"
+"E cortou o pescoço da besta com um único golpe.\n"
+"O corpo caiu entre as folhas secas.\n"
+"Silêncio voltou à floresta.\n"
+"Kael limpou a lâmina.\n"
+"Ele olhou ao redor.\n"
+"— Então esses são os monstros daqui.\n"
+"Mas algo estava errado.\n"
+"Naquele lugar.\n"
+"Parecia que estavam o caçando.\n",
+
+"O troll atacou primeiro.\n"
+"Seu punho esmagou o chão onde Kael estava um segundo antes.\n"
+"A força da criatura era absurda.\n"
+"Kael tentou cortar o braço do monstro.\n"
+"A lâmina atingiu a pele grossa.\n"
+"Mas não atravessou completamente.\n"
+"O troll atacou novamente.\n"
+"Kael desviava.\n"
+"Procurando uma abertura.\n"
+"Kael respirou fundo.\n"
+"Ele esperou o próximo ataque.\n"
+"O troll ergueu o braço gigantesco.\n"
+"Era isso que ele queria.\n"
+"Kael avançou direto para o monstro.\n"
+"A criatura não esperava isso.\n"
+"Ele deslizou por baixo do braço levantado.\n"
+"Pulou nas costas do troll.\n"
+"E cravou a espada direto na base do crânio da criatura.\n"
+"O troll congelou.\n"
+"Seus olhos se arregalaram.\n"
+"Depois o corpo gigantesco caiu lentamente no chão.\n"
+"A floresta ficou em silêncio novamente.\n"
+"Kael puxou a espada.\n"
+"Ele olhou ao redor.\n"
+"O vento começou a passar entre as árvores novamente.\n"
+"Pássaros voltaram a cantar ao longe.\n"
+"Como se a floresta inteira tivesse prendido a respiração.\n"
+"Até agora.\n"
+"Kael suspirou...\n"
+
+"...Capítulo 5 — O Reino Afogado\n"
+"A floresta terminou em um penhasco.\n"
+"Kael saiu entre as árvores.\n"
+"E parou diante de um mar infinito.\n"
+"O vento soprou forte.\n"
+"Carregando o cheiro de sal e tempestade.\n"
+"As ondas quebravam contra as pedras lá embaixo.\n"
+"Com um rugido constante.\n"
+"Do outro lado do oceano ficava o continente oriental.\n"
+"Antigamente havia rotas comerciais.\n"
+"Portos movimentados.\n"
+"E navios cruzando aquelas águas todos os dias.\n"
+"Agora quase ninguém se arriscava a navegar.\n"
+"Criaturas começaram a surgir no mar nos últimos anos.\n"
+"Navios desapareciam.\n"
+"Portos inteiros haviam sido abandonados.\n"
+"Mas Kael sabia que precisava atravessar.\n"
+"Ele desceu o penhasco por uma trilha antiga.\n"
+"Até chegar a um pequeno porto abandonado.\n"
+"Barcos quebrados balançavam presos a cordas velhas.\n"
+"Redes de pesca estavam espalhadas pelo chão.\n"
+"Cobertas de poeira e sal.\n"
+"No final do cais ainda havia um barco inteiro.\n"
+"Pequeno.\n"
+"Velho.\n"
+"Mas navegável.\n"
+"Kael passou a mão pela madeira do casco.\n"
+"— Isso vai ter que servir.\n"
+"Algumas horas depois o barco já estava no mar.\n"
+"O vento empurrava as velas lentamente.\n"
+"Enquanto a costa desaparecia atrás dele.\n"
+"Pela primeira vez em dias havia silêncio.\n"
+"Apenas o som das ondas.\n"
+"Mas o mar não gosta de silêncio por muito tempo.\n"
+"A água ao redor do barco começou a se mover.\n"
+"Primeiro foram pequenas ondas.\n"
+"Depois círculos na superfície.\n"
+"Então algo surgiu.\n"
+"Uma figura subiu lentamente da água ao lado do barco.\n"
+"Pele azulada.\n"
+"Olhos negros.\n"
+"Cabelos longos flutuando como algas.\n"
+"Uma sereia sombria.\n"
+"Ela observava Kael em silêncio.\n"
+"Depois outra apareceu.\n"
+"E mais outra.\n"
+"Kael segurou o cabo da espada.\n"
+"— Claro.\n"
+"O mar também está cheio de monstros.\n"
+"Uma das sereias abriu a boca.\n"
+"O canto começou baixo.\n"
+"Quase bonito.\n"
+"Mas Kael sentiu imediatamente.\n"
+"Magia.\n"
+"Magia tentando invadir sua mente.\n"
+"Tentando puxá-lo para o mar.\n"
+"Ele avançou antes que o canto terminasse.\n"
+"Com um único golpe rápido.\n"
+"Atingiu a criatura mais próxima do barco.\n"
+"A sereia mergulhou novamente na água.\n"
+"Desaparecendo nas ondas.\n"
+"As outras também sumiram logo depois.\n"
+"O mar voltou a ficar quieto.\n"
+"Quieto demais.\n"
+"Então o barco parou.\n"
+"Não havia vento.\n"
+"Não havia corrente.\n"
+"Mesmo assim algo segurava o navio.\n"
+"A água começou a borbulhar...\n",
+
+"O tentáculo atacou primeiro.\n"
+"Ele esmagou o convés.\n"
+"Com força suficiente para partir pedra.\n"
+"Kael saltou para o lado.\n"
+"Outro tentáculo subiu da água.\n"
+"E tentou arrastá-lo para o mar.\n"
+"Kael cortou a ponta da criatura.\n"
+"Fazendo o monstro recuar com um rugido furioso.\n"
+"Mas havia muitos tentáculos.\n"
+"O barco começou a se partir.\n"
+"Kael percebeu que não podia vencer ficando ali.\n"
+"Ele respirou fundo.\n"
+"E correu.\n"
+"Quando o próximo tentáculo atacou.\n"
+"Kael saltou direto sobre ele.\n"
+"A pele da criatura era escorregadia.\n"
+"Mas ele conseguiu subir alguns metros.\n"
+"Outro tentáculo tentou derrubá-lo.\n"
+"Kael continuou correndo.\n"
+"Subindo.\n"
+"Até alcançar o ponto onde os tentáculos se conectavam ao corpo principal do monstro.\n"
+"Ali a pele era mais fina.\n"
+"Ele levantou a espada.\n"
+"— Acabou.\n"
+"Kael cravou a lâmina profundamente na carne da criatura.\n"
+"O Kraken soltou um rugido monstruoso.\n"
+"O mar inteiro se agitou.\n"
+"A criatura se debateu violentamente.\n"
+"Até finalmente afundar novamente nas profundezas.\n"
+"A água ficou vermelha por alguns segundos.\n"
+"Depois tudo ficou quieto.\n"
+"O barco balançava.\n"
+"Quase destruído.\n"
+"Mas ainda flutuando.\n"
+"Kael voltou lentamente para o convés.\n"
+"Ele respirou fundo.\n"
+"Enquanto o vento começava a soprar novamente.\n"
+"Ao longe ele já conseguia ver terra.\n"
+"O outro continente.\n"
+"Mas quando olhou para o céu.\n"
+"Ele percebeu algo estranho.\n"
+"Nuvens negras giravam lentamente no horizonte.\n"
+"Como se algo enorme estivesse despertando.\n"
+"Kael apertou o cabo da espada.\n"
+"— Então é para lá que eu preciso ir.\n"
+"O barco seguiu lentamente em direção à costa.\n"
+"E no céu distante.\n"
+"Relâmpagos vermelhos começaram a surgir dentro das nuvens...\n"
+
+"...Capítulo 6 — As Portas do Inferno\n"
+"O barco não chegou inteiro.\n"
+"Depois da batalha no mar, o casco já estava danificado demais.\n"
+"As ondas continuaram batendo contra a madeira quebrada enquanto Kael se aproximava da costa do continente oriental.\n"
+"Faltavam poucos metros.\n"
+"Então o casco finalmente cedeu.\n"
+"A madeira rachou com um estalo alto, e parte do barco se partiu sob seus pés.\n"
+"Kael não perdeu tempo.\n"
+"Ele saltou na água e nadou os últimos metros até a areia.\n"
+"Quando finalmente saiu do mar, a maré levou embora o que restava da embarcação.\n"
+"O barco tinha resistido apenas o suficiente.\n"
+"O suficiente para ele chegar.\n"
+"Kael ficou alguns segundos olhando o mar.\n"
+"— Você cumpriu seu papel.\n"
+"Ele virou-se para o continente.\n"
+"A costa era diferente do que ele lembrava das histórias antigas.\n"
+"Penhascos escuros dominavam o horizonte, e o céu parecia permanentemente coberto por nuvens pesadas.\n"
+"Ali perto ainda havia sinais de vida.\n"
+"Algumas pequenas casas de madeira estavam espalhadas acima da praia.\n"
+"Formando uma pequena vila costeira.\n"
+"Era pouco mais que um punhado de cabanas.\n"
+"Mesmo assim, parecia um milagre que ainda existisse.\n"
+"Kael caminhou até lá.\n"
+"As pessoas da vila eram poucas.\n"
+"Rostos cansados.\n"
+"Olhos atentos.\n"
+"Eles observavam Kael como alguém que já esperava problemas.\n"
+"Um velho pescador falou primeiro.\n"
+"— Você veio do mar?\n"
+"Kael assentiu.\n"
+"— Estou atravessando o continente.\n"
+"O velho soltou uma risada curta.\n"
+"— Então você escolheu o pior caminho possível.\n"
+"Ele apontou para o interior do continente.\n"
+"— Depois dessas montanhas não existe mais vila nenhuma.\n"
+"Kael franziu a testa.\n"
+"— Nenhuma?\n"
+"O velho balançou a cabeça.\n"
+"— Só ruínas.\n"
+"Ele falou a última parte mais baixo.\n"
+"— E coisas piores.\n"
+"Kael olhou para o horizonte.\n"
+"O ar que vinha do interior carregava um cheiro estranho.\n"
+"Enxofre...\n",
+
+"...O demônio atacou primeiro.\n"
+"Sua espada gigantesca desceu como um meteoro.\n"
+"O impacto partiu a estrada de pedra.\n"
+"Kael já não estava mais ali.\n"
+"Ele avançou pela lateral da criatura tentando atingir o torso.\n"
+"Mas a pele do demônio era dura como ferro.\n"
+"A lâmina raspou sem penetrar profundamente.\n"
+"O demônio girou o braço com uma velocidade assustadora.\n"
+"Kael teve que recuar rapidamente para não ser esmagado.\n"
+"A criatura era forte.\n"
+"Muito mais forte que qualquer monstro que ele havia enfrentado até agora.\n"
+"Mas Kael percebeu algo.\n"
+"O demônio era poderoso.\n"
+"Mas lento.\n"
+"A espada gigantesca precisava de espaço para atacar.\n"
+"Cada golpe criava uma pequena abertura.\n"
+"Kael esperou.\n"
+"O demônio levantou a arma novamente.\n"
+"— Morra!\n"
+"A espada desceu.\n"
+"Kael correu direto para a criatura.\n"
+"A lâmina gigante passou atrás dele.\n"
+"Por um segundo o peito do demônio ficou completamente aberto.\n"
+"Era tudo que ele precisava.\n"
+"Kael saltou.\n"
+"Girou o corpo no ar.\n"
+"E cravou a espada direto no coração do demônio.\n"
+"A lâmina atravessou carne ossos e magia.\n"
+"Os olhos da criatura se arregalaram.\n"
+"O demônio soltou um rugido que ecoou pelas montanhas.\n"
+"Por alguns segundos ele permaneceu de pé.\n"
+"Então o corpo começou a rachar.\n"
+"Luz vermelha escapava pelas fissuras.\n"
+"— Impossível.\n"
+"O corpo inteiro explodiu em chamas negras.\n"
+"Restaram apenas cinzas espalhadas pela estrada.\n"
+"Silêncio voltou ao lugar.\n"
+"Kael puxou a espada.\n"
+"Ele olhou para o caminho que seguia pelas montanhas.\n"
+"Lá na frente.\n"
+"O céu estava vermelho.\n"
+"Tempestades de energia demoníaca giravam sobre o horizonte.\n"
+"Kael respirou fundo.\n"
+"— Então o portal está realmente aberto.\n"
+"Ele começou a caminhar novamente.\n"
+"Cada passo o levava mais perto do coração do inferno.\n"
+"E de quem quer que estivesse por trás de tudo aquilo...\n"
+
+"...Capítulo 7 — O Guardião Corrompido\n"
+"O portão das ruínas se abriu com um som grave de pedra arrastando.\n"
+"Kael empurrou a estrutura antiga com esforço até criar espaço suficiente para passar.\n"
+"Do outro lado não havia cidade.\n"
+"Nem estrada.\n"
+"Nem floresta.\n"
+"Apenas um grande vale coberto por cinzas.\n"
+"O chão era escuro, como se tivesse sido queimado incontáveis vezes.\n"
+"Pilares de pedra negra surgiam da terra como dentes quebrados.\n"
+"O céu acima estava pesado.\n"
+"Coberto por nuvens vermelhas que se moviam devagar demais para serem naturais.\n"
+"Kael caminhou alguns passos.\n"
+"Cada movimento levantava poeira cinza no ar.\n"
+"Não havia vento.\n"
+"Não havia som.\n"
+"Mas algo estava ali.\n"
+"Ele podia sentir.\n"
+"No centro do vale havia uma estrutura antiga.\n"
+"Um santuário destruído.\n"
+"Metade templo.\n"
+"Metade fortaleza.\n"
+"As colunas estavam quebradas e o teto havia desabado.\n"
+"Mas uma figura permanecia ali.\n"
+"Parada no meio das ruínas.\n"
+"Uma armadura.\n"
+"Alta.\n"
+"Pesada.\n"
+"Antiga.\n"
+"Coberta por rachaduras e símbolos demoníacos gravados no metal.\n"
+"Dentro dela não havia rosto.\n"
+"Apenas uma luz vermelha queimando onde os olhos deveriam estar.\n"
+"Quando Kael se aproximou, a figura se moveu.\n"
+"Lentamente.\n"
+"Como uma estátua voltando à vida.\n"
+"A voz ecoou dentro do metal.\n"
+"— Humano.\n"
+"Kael parou.\n"
+"— Faz tempo desde que alguém chegou tão longe.\n"
+"A criatura levantou a espada negra.\n"
+"— Eu sou o Guardião Corrompido.\n"
+"O chão tremeu quando ele deu o primeiro passo.\n"
+"— Lacaio de Malgethar.\n"
+"O vento começou a soprar pelo vale.\n"
+"— Aqueles que passam por mim chegam perto demais do Rei Demônio.\n"
+"Kael puxou sua espada.\n"
+"— Então você está no caminho errado.\n"
+"A luz vermelha brilhou mais forte.\n"
+"— Não.\n"
+"Ele ergueu a espada.\n"
+"— Eu sou o caminho...\n",
+
+"...O primeiro choque de espadas ecoou pelo vale como um trovão.\n"
+"A força do guardião era absurda.\n"
+"Cada golpe partia o chão de pedra ao meio.\n"
+"Kael desviava por pouco.\n"
+"A armadura era grossa.\n"
+"Resistente.\n"
+"E movia-se como se tivesse vontade própria.\n"
+"O guardião atacou novamente.\n"
+"Kael bloqueou o golpe.\n"
+"E foi empurrado vários metros para trás.\n"
+"A força abriu sulcos no chão.\n"
+"— Impressionante — disse o guardião.\n"
+"— Um humano que não quebra no primeiro golpe.\n"
+"Ele avançou novamente.\n"
+"As espadas se chocaram várias vezes.\n"
+"Faíscas voaram pelo vale.\n"
+"Kael percebeu algo.\n"
+"A armadura era forte.\n"
+"Mas antiga.\n"
+"Rachaduras finas percorriam o metal.\n"
+"A corrupção demoníaca a mantinha viva.\n"
+"Mas também instável.\n"
+"Kael esperou o próximo ataque.\n"
+"O guardião ergueu a espada.\n"
+"Kael avançou direto.\n"
+"Em vez de bloquear.\n"
+"Ele passou pelo golpe.\n"
+"A espada negra atingiu o chão atrás dele.\n"
+"Kael girou o corpo.\n"
+"E cravou sua lâmina na rachadura do peito da armadura.\n"
+"Por um segundo nada aconteceu.\n"
+"Então a luz vermelha começou a piscar.\n"
+"O metal tremeu.\n"
+"Rachaduras se espalharam pelo corpo da armadura.\n"
+"— Então você realmente chegou…\n"
+"A armadura se partiu.\n"
+"Fragmentos caíram no chão.\n"
+"O corpo vazio desmoronou lentamente.\n"
+"Silêncio voltou ao vale.\n"
+"Kael puxou a espada.\n"
+"Entre os restos havia um cristal negro.\n"
+"Energia demoníaca pulsava dentro dele.\n"
+"Kael pegou o cristal.\n"
+"— Um núcleo.\n"
+"Ao longe montanhas negras se erguiam.\n"
+"E acima delas.\n"
+"Uma torre gigantesca perfurava as nuvens.\n"
+"A Fortaleza de Malgethar.\n"
+"Kael fechou a mão no cristal.\n"
+"— Então é para lá.\n"
+"O vento soprou mais forte.\n"
+"E um rugido distante ecoou das montanhas...\n"
+
+"...Capítulo 8 — O Cavaleiro do Abismo\n"
+"O vale de cinzas terminou nas montanhas negras.\n"
+"Kael caminhou por horas entre rochas escuras e trilhas estreitas.\n"
+"O vento ali era diferente.\n"
+"Frio e pesado.\n"
+"Carregando um cheiro metálico no ar.\n"
+"Quanto mais ele avançava.\n"
+"Mais o céu ficava escuro.\n"
+"Não era noite.\n"
+"Era como se a própria luz estivesse sendo engolida pelas montanhas.\n"
+"Ao longe entre os picos.\n"
+"A fortaleza de Malgethar continuava visível.\n"
+"Uma torre colossal atravessando as nuvens.\n"
+"Mas antes dela havia um desfiladeiro.\n"
+"Estreito.\n"
+"Profundo.\n"
+"E no centro dele uma antiga ponte de pedra atravessava o abismo.\n"
+"Kael parou na entrada da ponte.\n"
+"O vento subia do fundo do desfiladeiro.\n"
+"Como um suspiro do próprio mundo.\n"
+"Ele começou a atravessar.\n"
+"Seus passos ecoavam sobre a pedra antiga.\n"
+"Metade da ponte estava destruída.\n"
+"Mas ainda era possível passar.\n"
+"Então ele viu.\n"
+"No outro lado da ponte havia um cavalo.\n"
+"Negro como a própria noite.\n"
+"Imóvel.\n"
+"E montado nele um cavaleiro.\n"
+"Armadura negra.\n"
+"Capa longa rasgada pelo vento.\n"
+"Uma espada enorme apoiada no ombro.\n"
+"Quando Kael se aproximou.\n"
+"O cavalo bateu a pata no chão.\n"
+"Os olhos da criatura brilhavam com uma luz azul fria.\n"
+"O cavaleiro levantou lentamente a cabeça.\n"
+"Dentro do elmo não havia rosto.\n"
+"Apenas escuridão.\n"
+"E duas chamas azuis.\n"
+"A voz ecoou como se viesse de um poço profundo.\n"
+"— Então você chegou até aqui.\n"
+"Kael parou alguns metros à frente.\n"
+"O vento levantava a capa do cavaleiro.\n"
+"— O Guardião Corrompido falhou.\n"
+"A criatura ergueu a espada.\n"
+"— Eu sou o Cavaleiro do Abismo.\n"
+"O cavalo negro bufou.\n"
+"Liberando uma névoa escura pelas narinas.\n"
+"— Lacaio de Malgethar.\n"
+"Ele apontou a espada para Kael.\n"
+"— E o último muro entre você e o Rei Demônio.\n"
+"Kael puxou sua espada.\n"
+"— Então vamos acabar com isso...\n",
+
+"...O cavalo avançou primeiro.\n"
+"Rápido demais para algo daquele tamanho.\n"
+"O cavaleiro levantou a espada.\n"
+"E atacou de cima para baixo.\n"
+"Kael desviou por pouco.\n"
+"A lâmina negra atravessou a pedra da ponte.\n"
+"Como se fosse areia.\n"
+"O cavaleiro girou o cavalo com precisão perfeita.\n"
+"E atacou novamente.\n"
+"Os golpes eram rápidos.\n"
+"Precisos.\n"
+"Diferentes do Guardião Corrompido.\n"
+"Esse inimigo sabia lutar.\n"
+"As espadas se chocaram várias vezes.\n"
+"Faíscas voaram sobre o abismo.\n"
+"Kael recuou alguns passos.\n"
+"Analisando.\n"
+"O cavaleiro não cometia erros.\n"
+"Mas havia algo estranho.\n"
+"A armadura.\n"
+"O cavalo.\n"
+"A espada.\n"
+"Tudo parecia feito da mesma escuridão.\n"
+"Magia do abismo.\n"
+"O cavaleiro atacou outra vez.\n"
+"Kael bloqueou o golpe.\n"
+"E naquele instante percebeu.\n"
+"A energia que mantinha o cavaleiro existindo.\n"
+"Não vinha da armadura.\n"
+"Vinha do peito.\n"
+"Um núcleo escuro brilhava entre as placas do peitoral.\n"
+"Kael esperou o próximo ataque.\n"
+"O cavalo avançou novamente.\n"
+"A espada desceu.\n"
+"Kael não bloqueou.\n"
+"Ele avançou.\n"
+"A lâmina inimiga passou por seu ombro.\n"
+"Rasgando sua roupa.\n"
+"Mas Kael já estava perto demais.\n"
+"Com um movimento rápido.\n"
+"Ele cravou sua espada direto no núcleo do peito do cavaleiro.\n"
+"Por um segundo tudo ficou imóvel.\n"
+"As chamas azuis dentro do elmo tremularam.\n"
+"A voz ecoou uma última vez.\n"
+"— Então é assim.\n"
+"A armadura começou a se desfazer em fumaça negra.\n"
+"O cavalo também se dissolveu lentamente.\n"
+"Como sombras levadas pelo vento.\n"
+"Em poucos segundos não restava nada.\n"
+"A ponte voltou a ficar silenciosa.\n"
+"Kael puxou a espada.\n"
+"Ele olhou para o outro lado do desfiladeiro.\n"
+"Agora não havia mais ninguém bloqueando o caminho.\n"
+"A estrada para a fortaleza estava aberta.\n"
+"A torre gigantesca de Malgethar parecia ainda maior.\n"
+"Kael respirou fundo.\n"
+"— Falta pouco agora...\n"
+
+"# Capítulo 9 — O Serafim Caído\n"
+"A ponte ficou para trás.\n"
+"Do outro lado do desfiladeiro a terra mudou novamente.\n"
+"Não havia mais montanhas ou trilhas naturais.\n"
+"O chão era feito de pedra negra lisa.\n"
+"Como se todo aquele território tivesse sido moldado por magia antiga.\n"
+"E no centro de tudo.\n"
+"A Fortaleza de Malgethar.\n"
+"A torre gigantesca se erguia até desaparecer dentro das nuvens vermelhas.\n"
+"Estruturas quebradas e muralhas antigas cercavam o lugar.\n"
+"Mas não havia exército guardando a entrada.\n"
+"Era como se o próprio lugar dissesse.\n"
+"Se você chegou até aqui então entre.\n"
+"Kael caminhou lentamente em direção ao portão principal.\n"
+"O ar estava pesado.\n"
+"Diferente de qualquer outro lugar que ele havia atravessado.\n"
+"Então a luz apareceu.\n"
+"Uma explosão de brilho branco surgiu no céu acima da fortaleza.\n"
+"Kael parou.\n"
+"Algo descia das nuvens.\n"
+"Asas enormes se abriram contra o céu escuro.\n"
+"Penas brancas.\n"
+"Manchadas por marcas negras que pareciam corrupção.\n"
+"A criatura pousou diante da fortaleza.\n"
+"Com um impacto que fez o chão tremer.\n"
+"Armadura dourada quebrada.\n"
+"Olhos brilhando com uma luz fria.\n"
+"Uma espada longa feita de energia pura.\n"
+"A figura ergueu lentamente a cabeça.\n"
+"— Humano.\n"
+"A voz era calma.\n"
+"Quase triste.\n"
+"Kael apertou o cabo da espada.\n"
+"— Outro lacaio de Malgethar?\n"
+"As asas da criatura se moveram lentamente.\n"
+"— Eu já fui muito mais do que isso.\n"
+"Ele abriu as asas completamente.\n"
+"A energia que emanava dali era absurda.\n"
+"— Eu sou o Serafim Caído.\n"
+"Antigo guardião do céu.\n"
+"Agora servo do Rei Demônio.\n"
+"Kael respirou fundo.\n"
+"— Então você escolheu o lado errado.\n"
+"A criatura fechou os olhos por um momento.\n"
+"— Talvez.\n"
+"Quando os abriu novamente.\n"
+"A luz dentro deles ficou ainda mais forte.\n"
+"— Mas eu não posso deixar você passar...\n",
+
+"...O serafim desapareceu.\n"
+"Kael mal teve tempo de reagir.\n"
+"Quando a espada de luz apareceu diante dele.\n"
+"O impacto lançou Kael vários metros para trás.\n"
+"A velocidade da criatura era absurda.\n"
+"O serafim atacava de todos os lados.\n"
+"Luz cortava o ar como relâmpagos.\n"
+"Kael bloqueava.\n"
+"Desviava.\n"
+"Recuava.\n"
+"Tentando acompanhar os movimentos impossíveis.\n"
+"— Impressionante.\n"
+"Disse o serafim enquanto pairava no ar.\n"
+"— Nenhum humano chegou tão longe.\n"
+"As asas bateram.\n"
+"A criatura mergulhou novamente.\n"
+"Kael percebeu algo.\n"
+"Cada vez que o serafim atacava.\n"
+"As manchas negras nas asas cresciam.\n"
+"A corrupção estava consumindo ele lentamente.\n"
+"Kael apertou o cabo da espada.\n"
+"— Então você também está preso nisso.\n"
+"O serafim parou no ar.\n"
+"Por um momento hesitou.\n"
+"— Não tente me salvar.\n"
+"Ele levantou a espada de luz.\n"
+"— Termine isso.\n"
+"A criatura desceu em um último ataque.\n"
+"Kael avançou ao mesmo tempo.\n"
+"As duas lâminas se cruzaram no centro do campo.\n"
+"Por um segundo nada se moveu.\n"
+"Então Kael girou a espada.\n"
+"E cravou a lâmina no peito do serafim.\n"
+"Ali onde a corrupção era mais forte.\n"
+"A luz explodiu ao redor deles.\n"
+"As asas gigantes se abriram uma última vez.\n"
+"O serafim olhou para o céu.\n"
+"— Finalmente.\n"
+"A corrupção começou a desaparecer.\n"
+"As asas brancas voltaram por um instante.\n"
+"E então a criatura se dissolveu em partículas de luz.\n"
+"Que subiram lentamente para o céu.\n"
+"Silêncio caiu sobre a fortaleza.\n"
+"Kael puxou a espada.\n"
+"No chão restava apenas um pequeno fragmento de cristal brilhante.\n"
+"Energia divina misturada com magia demoníaca.\n"
+"Kael pegou o cristal.\n"
+"Ele olhou para a entrada da fortaleza.\n"
+"As enormes portas começaram a se abrir lentamente sozinhas.\n"
+"Como se algo lá dentro já soubesse.\n"
+"Kael respirou fundo.\n"
+"— Acabaram os lacaios.\n"
+"Ele caminhou em direção à entrada escura.\n"
+"— Agora só falta um.\n"
+"Dentro da fortaleza uma presença colossal despertou.\n"
+"Uma voz profunda ecoou pelas paredes.\n"
+"— Finalmente.\n"
+"As sombras se moveram no interior do castelo.\n"
+"— Venha Kael.\n"
+"O nome dele ecoou pela sala do trono.\n"
+"— Estou esperando há dez anos.\n"
+"A porta se abriu completamente.\n"
+"E o trono do Rei Demônio aguardava no fundo da escuridão...\n"
+
+"...Capítulo Final — O Rei Demônio\n"
+"A porta da fortaleza se fechou atrás de Kael com um som pesado.\n"
+"O salão do trono era gigantesco.\n"
+"Colunas negras subiam até desaparecer na escuridão do teto.\n"
+"Chamas vermelhas queimavam em tochas antigas.\n"
+"Iluminando o chão de pedra marcado por runas demoníacas.\n"
+"No fundo da sala.\n"
+"Um trono.\n"
+"Alto.\n"
+"Feito de pedra negra e ossos antigos.\n"
+"E sentado nele.\n"
+"Estava Malgethar.\n"
+"Ele não se levantou.\n"
+"Não no começo.\n"
+"Kael caminhou lentamente pelo salão.\n"
+"Cada passo ecoava como um desafio.\n"
+"Quando chegou perto o suficiente.\n"
+"Malgethar finalmente falou.\n"
+"A voz dele era profunda.\n"
+"Calma.\n"
+"Pesada.\n"
+"— Dez anos.\n"
+"Kael parou.\n"
+"Os olhos vermelhos do Rei Demônio se abriram na escuridão da capa.\n"
+"— Dez anos desde que destruí sua vila.\n"
+"Malgethar levantou lentamente.\n"
+"Ele era alto.\n"
+"Muito mais alto que um humano comum.\n"
+"A capa negra parecia feita de sombras vivas.\n"
+"Que se moviam lentamente ao redor do corpo dele.\n"
+"— E agora você está aqui.\n"
+"Ele desceu os degraus do trono.\n"
+"Cada passo fazia o chão vibrar levemente.\n"
+"— Você derrotou meus lacaios.\n"
+"— Atravessou oceanos.\n"
+"— Sobreviveu ao meu mundo.\n"
+"Malgethar parou diante de Kael.\n"
+"Os olhos vermelhos brilharam mais forte.\n"
+"— Então mostre.\n"
+"Ele ergueu a mão.\n"
+"Energia demoníaca explodiu pelo salão.\n"
+"— Mostre se você realmente tem o direito de me enfrentar.\n"
+"Kael puxou a espada.\n"
+"— Eu esperei dez anos por isso.\n"
+"Malgethar sorriu pela primeira vez.\n"
+"— Então venha.\n"
+"O Rei Demônio ergueu a mão.\n"
+"— Kael.\n"
+"E a batalha começou...\n"
+]
 
 def historia():
     global indice_capitulo_atual
-    while True:
-        caracter = len(hist[indice_capitulo_atual])
-        for i in range(caracter):
-            print(hist[indice_capitulo_atual][i:i+1] , end='', flush=True)
-            time.sleep(0.02)
-        if caracter == len(hist[indice_capitulo_atual]):
-            print()
-            break
+    caracter = len(hist[indice_capitulo_atual])
+    for i in range(caracter):
+        print(hist[indice_capitulo_atual][i:i+1] , end='', flush=True)
+        time.sleep(0.0)
+       
+hist_2 =["A noite caiu sobre o assentamento.\n"
+"As tochas iluminavam as ruas enquanto os sobreviventes se preparavam.\n"
+"Kael caminhava entre as casas com a espada na mão.\n"
+"Algo estava errado.\n"
+"Os zumbis tinham parado.\n"
+"O silêncio tomou conta do lugar.\n"
+"Então um som ecoou na escuridão.\n"
+"TOC.\n"
+"TOC.\n"
+"Uma figura apareceu no fim da estrada.\n"
+"Um corpo magro envolto em mantos negros.\n"
+"O rosto era apenas um crânio vazio.\n"
+"Chamas verdes queimavam dentro dos olhos.\n"
+"Um Lich.\n"
+"Os mortos ao redor começaram a se mover novamente.\n"
+"Mas agora eles se moviam organizados.\n"
+"O lich levantou a mão lentamente.\n"
+"— Humano...\n"
+"— Este lugar agora pertence aos mortos.\n"
+"Kael ergueu a espada.\n"
+"— Então você veio ao lugar errado.\n"
+"O lich riu.\n"
+"E levantou o cajado.\n"
+"A batalha começou...\n",
 
-historia()
+"...Kael continuou avançando pela floresta.\n"
+"A floresta ficou cada vez mais escura.\n"
+"Mais silenciosa.\n"
+"Até que ele chegou a outra clareira.\n"
+"Mas essa era diferente.\n"
+"O chão estava queimado.\n"
+"Pedras negras formavam um círculo no centro.\n"
+"E ali…\n"
+"Uma sombra enorme cobria metade da clareira.\n"
+"O ar estava quente.\n"
+"Pesado.\n"
+"Kael levantou os olhos lentamente.\n"
+"E viu.\n"
+"Um dragão.\n"
+"As escamas negras refletiam a pouca luz da lua.\n"
+"Fumaça escapava das narinas da criatura.\n"
+"As asas estavam parcialmente abertas, grandes o suficiente para cobrir toda a clareira.\n"
+"Os olhos da criatura se abriram.\n"
+"Amarelos.\n"
+"Antigos.\n"
+"Inteligentes.\n"
+"O dragão observou Kael por alguns segundos.\n"
+"Então uma voz profunda ecoou pela clareira.\n"
+"— Um humano… chegou até aqui.\n"
+"A voz parecia vir de dentro da própria terra.\n"
+"Kael apertou o cabo da espada.\n"
+"— Você é o responsável pelas criaturas desta floresta?\n"
+"O dragão soltou um som baixo.\n"
+"Algo entre uma risada e um rosnado.\n"
+"— Eu sou aquele que governa este território.\n"
+"A criatura abriu as asas completamente.\n"
+"O vento da movimentação jogou poeira e folhas para todos os lados.\n"
+"— E você não deveria estar aqui...\n",
+
+"...Depois de quase uma hora descendo corredores Kael chegou a uma grande sala circular.\n"
+"O teto era alto.\n"
+"Colunas naturais sustentavam a caverna.\n"
+"No centro havia algo estranho.\n"
+"Um baú antigo.\n"
+"Kael parou.\n"
+"A sala estava silenciosa demais.\n"
+"Mesmo assim caminhou até o baú.\n"
+"A tampa estava entreaberta.\n"
+"Dentro havia escuridão.\n"
+"Kael estendeu a mão.\n"
+"E abriu completamente.\n"
+"O baú quase o mordeu.\n"
+"Dentes surgiram onde deveria existir madeira.\n"
+"A tampa virou uma mandíbula gigante.\n"
+"Uma língua comprida disparou tentando agarrá-lo.\n"
+"Kael saltou para trás.\n"
+"— Mímico.\n"
+"A criatura se levantou.\n"
+"O baú agora tinha pernas musculosas feitas de madeira viva.\n"
+"Presas enormes como espadas.\n"
+"Era muito maior do que um mímico comum.\n"
+"As runas no chão começaram a brilhar.\n"
+"A voz antiga da masmorra parecia vibrar nas paredes.\n"
+"A criatura avançou...\n",
+
+
+"...Kael continuou avançando pela mata por quase uma hora.\n"
+"Quanto mais ele entrava na floresta.\n"
+"Mais sinais de batalha apareciam.\n"
+"Árvores derrubadas.\n"
+"Marcas profundas de garras.\n"
+"E ossos.\n"
+"Muitos ossos.\n"
+"Até que ele chegou a uma pequena área plana.\n"
+"No centro havia algo enorme.\n"
+"Primeiro ele pensou que fosse uma rocha.\n"
+"Mas a rocha se moveu.\n"
+"A criatura se levantou lentamente.\n"
+"Mais de três metros de altura.\n"
+"Pele grossa e cinzenta.\n"
+"Braços longos e musculosos.\n"
+"Dentes tortos aparecendo na boca enorme.\n"
+"Um troll.\n"
+"A criatura olhou diretamente para Kael...\n",
+
+"...O mar se abriu.\n"
+"Primeiro surgiu um tentáculo.\n"
+"Gigantesco.\n"
+"Coberto de ventosas.\n"
+"Depois outro.\n"
+"E mais outro.\n"
+"A água explodiu ao redor do barco.\n"
+"Quando a criatura emergiu das profundezas.\n"
+"Olhos enormes surgiram na escuridão da água.\n"
+"Um corpo colossal escondido sob o oceano.\n"
+"O verdadeiro predador daquele mar.\n"
+"Kraken.\n"
+"O monstro enrolou um tentáculo ao redor do barco.\n"
+"Como se fosse um brinquedo.\n"
+"A madeira começou a ranger.\n"
+"Kael ficou em pé no convés.\n"
+"Encarando a criatura.\n"
+"— Então você é o rei daqui.\n"
+"O Kraken respondeu com um rugido.\n"
+"Que fez o mar inteiro tremer...\n",
+
+"Na manhã seguinte ele partiu.\n"
+"A pequena vila ficou para trás enquanto Kael caminhava em direção às montanhas negras.\n"
+"O caminho era seco e silencioso.\n"
+"Não havia animais.\n"
+"Não havia pássaros.\n"
+"Apenas pedras e o som distante de algo queimando.\n"
+"Então algo apareceu na estrada.\n"
+"Uma criatura pequena mas grotesca.\n"
+"Pele vermelha escura.\n"
+"Olhos amarelos.\n"
+"Chifres curtos.\n"
+"Um demônio menor.\n"
+"A criatura inclinou a cabeça ao ver Kael.\n"
+"Depois avançou com um grito agudo.\n"
+"Kael puxou a espada.\n"
+"O demônio atacou com garras afiadas.\n"
+"Mas seus movimentos eram desordenados.\n"
+"Kael desviou facilmente.\n"
+"Com um único golpe preciso atravessou o peito da criatura.\n"
+"O demônio caiu no chão e se desfez lentamente em cinzas negras.\n"
+"Kael observou os restos desaparecerem.\n"
+"— Então começou.\n"
+"Ele já tinha ouvido histórias.\n"
+"Se demônios menores estavam vagando pela estrada.\n"
+"Significava que algo muito pior estava próximo.\n"
+"Kael continuou caminhando pela estrada de pedra quebrada.\n"
+"Quanto mais avançava em direção às montanhas negras mais sinais apareciam.\n"
+"Cinzas espalhadas pelo chão.\n"
+"Árvores queimadas.\n"
+"Rochas derretidas pelo calor.\n"
+"O cheiro de enxofre ficava cada vez mais forte.\n"
+"Então ele viu.\n"
+"Um enorme portal de pedra quebrado no meio da estrada.\n"
+"Duas colunas gigantes estavam tombadas no chão.\n"
+"Como se algo colossal tivesse passado por ali.\n"
+"Mas não era aquilo que chamou a atenção de Kael.\n"
+"Era a criatura parada no meio do caminho.\n"
+"Alta.\n"
+"Muito alta.\n"
+"Mais de quatro metros.\n"
+"Pele vermelha escura quase negra.\n"
+"Grandes chifres curvados para trás.\n"
+"Asas rasgadas presas às costas.\n"
+"E uma espada enorme feita de metal negro.\n"
+"Um demônio guerreiro.\n"
+"A criatura estava parada como se estivesse esperando.\n"
+"Quando Kael se aproximou os olhos amarelos do demônio brilharam.\n"
+"Ele sorriu.\n"
+"— Um humano.\n"
+"A voz era grave pesada como pedra.\n"
+"— Faz séculos que não vejo um atravessar estas terras sozinho.\n"
+"Kael não respondeu.\n"
+"Apenas puxou a espada.\n"
+"O demônio ergueu sua lâmina gigante.\n"
+"— Se quer passar.\n"
+"Ele abriu as asas lentamente.\n"
+"— Terá que provar que merece.\n",
+'\n', '\n', '\n', '\n']
+
+def historia_apresentacao():
+    global indice_capitulo_atual
+    caracter = len(hist_2[indice_capitulo_atual])
+    for i in range(caracter):
+        print(hist_2[indice_capitulo_atual][i:i+1] , end='', flush=True)
+        time.sleep(0.0)
+
+finais = [' ',
+          
+            "# FINAL 1 — Vitória\n"
+            "                  o%0o. \n"
+            "                 / ~  b\n"
+            "             __/'o.   I\n"
+            "            /  #   |< I\n"
+            "          _/|      |  I\n"
+            "         /  |    # |  I\n"
+            "         I- | ~    | :I\n"
+            "         I  |      |  I\n"
+            "     .--.I  '*+__+*'  I.--.\n"
+            "     @  @I_ __________I@  @\n"
+            "     |  |/____________\|  |\n"
+            "     |   ¨*V########?°'   |\n"
+            "     |  ´           -     |\n"
+            "     |-     `     °    -  |\n"
+            "    J%____________________%L\n"
+            "A batalha final destruiu metade da fortaleza.\n"
+            "Mas no final.\n"
+            "A espada de Kael atravessou o coração de Malgethar.\n"
+            "O Rei Demônio caiu de joelhos.\n"
+            "A energia demoníaca começou a desaparecer.\n"
+            "Ele olhou para Kael uma última vez.\n"
+            "— Então finalmente chegou.\n"
+            "O corpo dele começou a se desfazer em cinzas.\n"
+            "— O mundo agora é seu para proteger.\n"
+            "Malgethar desapareceu.\n"
+            "O silêncio voltou ao castelo.\n"
+            "Kael saiu da fortaleza.\n"
+            "Enquanto o sol finalmente atravessava as nuvens.\n"
+            "Depois de dez anos.\n"
+            "A guerra acabou.\n",
+
+            "# FINAL 2 — Derrota\n"
+            "Kael caiu.\n"
+            "Sua espada deslizou pelo chão de pedra.\n"
+            "Malgethar olhou para ele de cima.\n"
+            "— Você lutou bem.\n"
+            "O Rei Demônio ergueu a mão.\n"
+            "— Mas ainda não era suficiente.\n"
+            "A escuridão cobriu o salão.\n"
+            "O corpo de Kael desapareceu nas sombras.\n"
+            "E o mundo continuou sob o domínio de Malgethar.\n", 
+
+            "FINAL 3 — Sacrifício\n"
+            "Kael levantou a espada.\n"
+            "Ele sabia o que precisava fazer.\n"
+            "Se eu continuar vivo.\n"
+            "Posso me tornar algo pior.\n"
+            "Ele atravessou a própria espada no peito.\n"
+            "O cristal caiu no chão.\n"
+            "A corrupção desapareceu.\n"
+            "Kael salvou o mundo.\n"
+            "Mesmo que ninguém jamais soubesse.\n",
+
+            "FINAL 4 — Novo Rei Demônio\n"
+            "Kael deixou a corrupção consumir seu corpo.\n"
+            "O poder cresceu.\n"
+            "As sombras o envolveram.\n"
+            "Quando ele se levantou novamente.\n"
+            "Seus olhos brilhavam em vermelho.\n"
+            "O mundo ganhou um novo Rei Demônio.\n"
+            "Mais cruel.\n"
+            "Mais impiedoso.\n"
+            "Mais poderoso...\n" 
+            "...100 anos depois\n"
+            "Um século se passou.\n"
+            "O mundo vivia sob o domínio do novo Rei Demônio.\n"
+            "Cidades destruídas.\n"
+            "Reinos caídos.\n"
+            "E no topo da antiga fortaleza.\n"
+            "Ele se sentava no trono.\n"
+            "Então um jovem guerreiro entrou no salão.\n"
+            "Espada na mão.\n"
+            "Olhos cheios de determinação.\n"
+            "Ele apontou a lâmina para o trono.\n"
+            "Eu vim derrotar o Rei Demônio.\n"
+            "O novo Rei Demônio abriu os olhos lentamente.\n"
+            "E sorriu.\n"
+            "A história.\n"
+            "Começaria novamente.\n"]
+
+def fim():
+    global indice_capitulo_atual, cristal, escolha_definitiva, vida_jogador, vida_inimigo,finais, final, vida_max_j
+    if indice_capitulo_atual >= 9:
+        if vida_inimigo <= 0:
+            final = 1
+        elif vida_jogador <= 0:
+            final = 2
+        elif vida_jogador <= (vida_max_j / 10) and cristal == False:
+            cristal = True
+            print( "Durante a batalha final.\n"
+                    "Kael sentiu o cristal do Serafim Caído pulsando em seu bolso.\n"
+                    "Uma voz sussurrou em sua mente.\n"
+                    "Use.\n"
+                    "Use o poder.\n")
+            time.sleep(3)
+            while True:
+                try:
+                    escolha_definitiva = str(input("Usar a pedra do Serafim caido S/N.")).upper()
+                    if escolha_definitiva == 'S':
+                        print("Kael segurou o cristal.\n"
+                        "A energia divina misturada com corrupção demoníaca entrou em seu corpo.\n"
+                        "Seu poder aumentou.\n"
+                        "Mas algo dentro dele também começou a mudar.\n")
+                        time.sleep(0.3)
+                        break
+                    elif escolha_definitiva == 'N':
+                        print("O poder dentro dele chamava.\n"
+                        "Prometia força.\n"
+                        "Prometia vitória.\n"
+                        "Mas Kael não tocou nele.\n"
+                        "Ele fechou a mão e ignorou o sussurro.\n"
+                        "— Eu não preciso disso.\n"
+                        "Malgethar avançou com toda sua força.\n"
+                        "A energia demoníaca tomou o salão do trono.\n"
+                        "As espadas se chocaram novamente.\n"
+                        "O impacto quebrou o chão de pedra.\n"
+                        "A batalha continuou por minutos que pareceram horas.\n"
+                        "Kael lutava apenas com sua própria força.\n"
+                        "Sua própria vontade.\n"
+                        "Sua própria espada.\n") 
+                        time.sleep(5)
+                        break
+                except ValueError:
+                    print("Entrada inválida. Digite entre S ou N.")
+
+        elif vida_inimigo <= 0 and vida_jogador >= 0 and cristal == True:
+            print("Com essa nova força.\n"
+            "O  derrotou Malgethar.\n"
+            "O Rei Demônio caiu.\n"
+            "Mas o cristal continuava brilhando.\n"
+            "Kael caiu de joelhos.\n"
+            "A corrupção se espalhava por seu corpo.\n"
+            "Ele tinha duas escolhas.\n")
+            time.sleep(4)
+            while True:
+                try:
+                    escolha_definitiva = str(input("Sacrificio ou Corrupção S/C.")).upper()
+                    if escolha_definitiva == 'S':
+                        final = 3
+                        break
+                    elif escolha_definitiva == 'C':
+                        final = 4
+                        break
+                except ValueError:
+                    print("Entrada inválida. Digite entre S ou N.")
+
+        caracter = len(finais[final])
+        for i in range(caracter):
+            print(finais[final][i:i+1] , end='', flush=True)
+            time.sleep(0.02)
+    
 
 # Escolha da dificuldade do jogo
 print('1)Fácil')
@@ -1539,7 +2911,11 @@ def combate():
     global dado_i,dado_j, afinidade_j, jogador_nivel, inimigo_nivel, vida_max_j, mana_max_j, estamina_max_j 
     global vida_max_i, mana_max_i, estamina_max_i, dano_j, perda_estamina_j, magia_especial_j 
     global dano_i, perda_estamina_i, magia_especial_i, critico, ataque, escudo, ctco
-    global defesa_j, esquiva_j, defesa_i, esquiva_i, encontrado, abilidade_100
+    global defesa_j, esquiva_j, defesa_i, esquiva_i, encontrado, abilidade_100, apresentacao_pause
+
+    if nome_inimigo in ['Lich','Dragão Arcano','Troll','Kraken','Archdemon','Guardião Corrompido','Cavaleiro do Abismo','Serafim Caido','Malgethar'] and indice_capitulo_atual <= 9 and apresentacao_pause == False:
+        historia_apresentacao()
+        apresentacao_pause = True
 
     print(dano_bonus,escudo_bonus,adrenalina_bonus,agilidade_bonus)
     aleatoridade_i()
@@ -1547,7 +2923,6 @@ def combate():
     buffs()
     abilidade()
 
-    
     defesa_j = False
     esquiva_j = False
     defesa_i = False
@@ -1575,6 +2950,7 @@ def combate():
     
     if jogador == 0:
         print('Você decide não fazer nada')
+        vida_inimigo = 0
     elif jogador == 1:
         ataqu_j()
     elif jogador == 2:
@@ -1622,9 +2998,7 @@ def combate():
                 vida_jogador -= c
             print('+', c)
 
-
-while True:
-    
+while True:     
     if not encontrado:
         if jogador_nivel <= 2:
             N = 100
@@ -1650,7 +3024,7 @@ while True:
 
                 # Ajusta atributos do inimigo
                 ultimo_monstro = obter_ultimo_monstro(capitulo_atual)
-                nivel_i = random.randint(max(-1, jogador_nivel - 3), jogador_nivel + 4)
+                nivel_i = random.randint(min(0, jogador_nivel - 3), jogador_nivel + 1)
                 if ultimo_monstro: 
                     nivel_i = random.randint(max(1, jogador_nivel + 2), jogador_nivel + 5)
                 inimigo_nivel = nivel_i
@@ -1683,9 +3057,9 @@ while True:
             evento = randint(1,10)
             if encontrado == True:
                 None
-            elif evento >= 5:
+            elif evento >= 5 :
                 encontrado = True
-            else:    
+            elif indice_capitulo_atual != 9:    
                 andando()
         else:
             print("Nenhum inimigo encontrado.")
@@ -1696,18 +3070,16 @@ while True:
             combate()
         except Exception as e:
             print(f"Erro ao executar combate(): {e}")
-    
+
     # Verificar condições de fim de combate
     if vida_inimigo <= 0 and encontrado == True:
         if vida_inimigo <= 0:
             mortes_inimigos += 1
         encontrado = False
+        apresentacao_pause = False
         turno = 0
-        
-        print('-='*6,'=-'*6)
-        print('      Jogador Venceu')
-        print('-='*6,'=-'*6,'\n')
-        nivel_j()
+        if indice_capitulo_atual != 9:
+            nivel_j()
 
         # Verificar se pasou de capitulo
         nome_inimigo_derrotado = nome_inimigo
@@ -1717,26 +3089,15 @@ while True:
                 capitulo_atual = capitulos[indice_capitulo_atual]
                 historia()
             elif capitulo_atual == capitulo_final:
-                print('\nVocê ganhou o jogo')
-                print('      ,o0%%%%%%0o. ')
-                print('     d     __  ~  b')
-                print("     I  .o'  'o.  I")
-                print('     I ´|  #   |< I')
-                print('     I  |      |  I')
-                print('     I  |    # |  I')
-                print('     I- | ~    | :I')
-                print('     I  |      |  I  ')
-                print(" .--.I  '*+__+*'  I.--.")
-                print(' @  @I_ __________I@  @')
-                print(' |  |/____________\|  |')
-                print(" |   ¨*V########?°'   |")
-                print(' |  ´           -     |')
-                print(' |-     `     °    -  |')
-                print('J%____________________%L')
+                print('\n' ,vida_inimigo, escolha_definitiva,'\n')
+                fim()
                 break
+                
         
     if vida_jogador <= 0:
-        print('Jogador Pereceu')
+        fim()
         break
+    if vida_jogador <= (vida_max_j / 10) and cristal == False:
+        fim()
 
     time.sleep(0.6)
