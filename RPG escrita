@@ -77,16 +77,16 @@ agilidade_bonus = 0
 critico = 0.4
 
 # efeitos 
-atordoado_j = False
-atordoado_i = False
+aparo_j = False
+aparo_i = False
 
 escolha_jogador = 0
 mortes_inimigos = 0 # Contador de mortes 
+mortes_boss = 0 # Contador de mortes de chefes
 turno = 0  # Contador de turnos
 final = 0
 
 # Função para evento 
-cavalo = False
 energia = 0.05
 abilidade_100 = False
 
@@ -96,18 +96,48 @@ esquiva_j = False
 defesa_i = False
 esquiva_i = False
 cristal = False
+
+apresentacao_pause = False
 escolha_definitiva = ''
 
-#cidade
+# cidade 1
+# estaleiro
+cavalo = False
+cavalo_2 = False
+cavalo_3 = False
+
+# cidade 2
+# ferreiro
 espada_aprimorada = False
 espada_forjada = False
+# feiticeiro
 Runa_adiquirida = False
 escudo_criado = False
 cajado_criado = False
 manto_criardo = False 
 joia_criada = False
-apresentacao_pause = False
+# missao guilda
+missao_caca_1 = False
+missao_caca_2 = False
+missao_caca_chefe = False
+missao_capitulo = False
+missao_coleta_ervas = False
+missao_exploracao_1 = False
+missao_investigacao_1 = False
+missao_resgate = False
+# fazendo as missoes
+inimigos_derrotados_missao = 0 #
+inimigos_derrotados_missao_10 = 0 #
+chefes_derrotados_missao = 0 #
+area_avancada_missao = 0 #
+resgatado_missao = 0 #
+investigacao_missao = 0 #
+coleta_ervas_missao = 0 #
+vila_relatacao_missao = 0 #
+missoes_concluidas = 0
 ctco = 0
+flores_coletadas = 0
+
 itens = {'Raízes Revigorantes':0,
         'Cogumelo Brilhante':0,
         'Erva-de-São-João':0,  
@@ -157,10 +187,29 @@ def comfiguracoes():
         if escolha == 4:
             dificuldade = 9  # Impossível
     elif escolha == 3:
-        creditos()
+        print("==============================\n"
+              "          RPG BATTLE\n"
+              "           V0.9 beta\n"
+              "==============================\n"
+              "       Desenvolvido por:\n"
+              "           Kennedy\n"
+              "==============================\n")
     elif escolha == 4:
         sys.exit()
         exit()
+
+
+# nome do heroi
+while True:
+    try:
+        nome_heroi = input('Nome do heroi: ')
+        sn = str(input('confirmar S/N: ')).upper()
+        if sn == 'S':
+            break
+        else:
+            print("Escolha inválida. Digite entre S ou N.")
+    except ValueError:
+        print("Entrada inválida. Digite entre S ou N.")
 
 print('1)Fácil')   
 print('2)Normal')
@@ -208,31 +257,11 @@ elif magia == 3:
 elif magia == 4: 
     afinidade_j = 'Lança de Terra'
 
-def creditos():
-    credito = [
-        "",
-        "==============================",
-        "          RPG BATTLE",
-        "           V0.9 beta",
-        "==============================",
-        "",
-        "       Desenvolvido por:",
-        "           Kennedy",
-        "",
-        "       Obrigado por jogar.",
-        "",
-        "=============================="
-    ]
-    caracter = len(credito)
-    for i in range(caracter):
-        print(credito[i:i+1] , end='', flush=True)
-        time.sleep(0.02)
-
 def evento_aleatorio():
     global encontrado, vida_jogador, mana_jogador, estamina_jogador, pocao_cura 
     global pocao_mana, moeda_ouro, moeda_prata, moeda_bronze, dano_base_j
     global escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo, vida_inimigo,vida_max_i
-    global xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, cavalo, energia, abilidade_100
+    global xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, abilidade_100, missao_resgate, resgatado_missao, missao_investigacao_1, investigacao_missao
     evento = random.randint(1, 32)  # Escolhe um número aleatório entre 1 e 30
 
     if evento == 1:
@@ -414,19 +443,20 @@ def evento_aleatorio():
         estamina_jogador -= int(0.10 * estamina_jogador)  # Perde 10% da estamina
         print(f"Estamina: {estamina_jogador} -10%")
 
-    elif evento == 9:
-        print("Você encontrou um animal ferido.")
-        print("1) Ajudar (gastar uma poção de cura)")
+    elif evento == 9 and missao_resgate == True:
+        print("Você encontrou um cachorro ferido.")
+        print("1) Ajudar (-1 poção de cura)")
         print("2) Ignorar")
         while True:
             try:
                 escolha = int(input("O que você faz? "))
                 if escolha == 1 and pocao_cura > 0:
                     pocao_cura -= 1
-                    print("Você ajudou o animal!")
+                    print("Você ajudou o o cachorro!")
+                    resgatado_missao += 1
                     break
                 elif escolha == 2:
-                    print("Você decidiu ignorar o animal.")
+                    print("Você decidiu ignorar o cachorro.")
                     break
                 else:
                     print("Escolha inválida. Digite 1 ou 2.")
@@ -604,8 +634,8 @@ def evento_aleatorio():
             except ValueError:
                 print("Entrada inválida. Digite 1 ou 2.")
 
-    elif evento == 20:
-        print("Você foi cercado por uma aranha gigante!")
+    elif evento == 20 and missao_investigacao_1 == True:
+        print("em quanto esplorava a floresta\nVocê foi cercado por uma aranha gigante!")
         print("1) Lutar")
         print("2) Usar fogo para afastá-la")
         while True:
@@ -613,6 +643,7 @@ def evento_aleatorio():
                 escolha = int(input("O que você faz? "))
                 if escolha == 1:
                     print("Você decidiu lutar!")
+                    investigacao_missao += 1
                     encontrado = True
                     nome_inimigo = 'Aranha gigante'
                     vida_inimigo = 600
@@ -668,22 +699,7 @@ def evento_aleatorio():
         print(f"Moedas de ouro: {moeda_ouro} +10, Moedas de prata: {moeda_prata} +50, Moedas de bronze: {moeda_bronze} +100")
 
     elif evento == 25:
-        if cavalo == False:
-            print("Você encontrou um cavalo selvagem!")
-            try:
-                escolha = str(input('Domar-lo S/N')).upper()
-                if 'S':
-                    print("Agora você cansara menos na viajem.")
-                    energia = 0.03
-                    cavalo = True
-                else:
-                    print('Voce continua sua jornada andando')
-
-            except ValueError:
-                print("digite entre (1 e 2).")
-
-        else:
-            print('você avista alguns cavalos pastando.')
+        None
     elif evento == 26:
         print("Você recebeu uma bênção divina!")
         vida_jogador += int(0.10 * vida_jogador)  # Aumenta a vida máxima em 10%
@@ -717,7 +733,6 @@ def evento_aleatorio():
             try:
                 escolha = int(input("O que você faz? "))
                 rng = randint(1,10)
-                
                 if escolha == 1:
                     if rng == 10:
                         print(f"Você o pega, libertando uma nova abilidade, DADO_100%. ")
@@ -739,7 +754,7 @@ def evento_aleatorio():
     return (encontrado, vida_jogador, mana_jogador, estamina_jogador, pocao_cura, 
             pocao_mana, moeda_ouro, moeda_prata, moeda_bronze, dano_base_j, 
             escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo, vida_inimigo,vida_max_i,
-            xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana, cavalo, energia)
+            xp_max,xp_min,nivel_i, eficiencia_cura, eficiencia_mana)
 
 # Função para andar e explorar
 def andando():
@@ -759,11 +774,11 @@ def andando():
         print('2) Descansar')
         print('3) Ver status')
         print('4) Fabricar poções')
-
         if indice_capitulo_atual >= 6:
             print('5) Não existe mais vilas nesta area')
         else:
             print('5) Procurar por uma vila')
+        print('6) comfigurações')
         while True:
             try:
                 escolha = int(input('Escolha uma opção: '))
@@ -773,6 +788,7 @@ def andando():
                     print('Digite um número entre 1 e 5!')
             except ValueError:
                 print('Digite um número entre 1 e 5!')
+                continue
 
         if escolha == 1:
             estamina_jogador -= int(energia * estamina_jogador) 
@@ -792,7 +808,7 @@ def andando():
             print(f"Estamina recuperada: {estamina_jogador}")
             break
         elif escolha == 3:
-            print(f'\nStatus do Jogador:')
+            print(f'\nStatus do {nome_heroi}:')
             print(f'Vida: {vida_jogador}/{vida_max_j}')
             print(f'Mana: {mana_jogador}/{mana_max_j}')
             print(f'Estamina: {estamina_jogador}/{estamina_max_j}')
@@ -874,14 +890,14 @@ def andando():
                                 print('Escolha inválida. Digite um número entre 1 e 4.')
                         except ValueError:
                             print('Escolha inválida. Digite um número entre 1 e 4.')
+                            continue
                 elif escolha_pocao == 6:
                     break
-
                 else:
                     print('Escolha inválida. Digite um número entre 1 e 6.')
             except ValueError:
                 print('Escolha inválida. Digite um número entre 1 e 6.')
-
+                continue
         elif escolha == 5:
             if indice_capitulo_atual >= 6:
                 print('Você encontra apenas escombros') 
@@ -892,12 +908,17 @@ def andando():
                 time.sleep(1)
                 vila_encontrada = random.randint(1, 10)
                 if vila_encontrada <= 3:
-                    print('Você encontrou uma vila!')
-                    cidade()
+                    print('Você encontrou a vila Vale das Flores!')
+                    cidade_1()
+                elif vila_encontrada <= 5:
+                    print('Você encontrou a vila Moinho Velho!')
+                    cidade_2()
                 else:
                     print('Você não encontra nada nas proximidades!')
                     estamina_jogador -= 5
                     print(f"Estamina: {estamina_jogador} -5")
+        elif escolha == 6:
+            comfiguracoes()
 
     return (estamina_jogador, encontrado, vida_jogador, mana_jogador, pocao_cura, pocao_mana, moeda_ouro, 
             moeda_prata, moeda_bronze, dano_base_j, escudo_base_j, dano_bonus, escudo_bonus, nome_inimigo,
@@ -2353,7 +2374,6 @@ def fim():
             time.sleep(0.02)
     
 historia()
-
 # Escolha magia inimigo
 def escolha_magia_i():
     global magia_i, afinidade_i
@@ -2406,7 +2426,7 @@ def aleatoridade_i():
     return dado_i, dano_i, escudo_efetivo_i, cura_i, mana_i, perda_mana_i, perda_estamina_i, magia_especial_i
 
 def IA_inimigo():
-    global escolha_jogador, vida_inimigo, vida_max_i, identificar_padrao, IA_padrao, IA_acao, jogador_leitura, IA_estilo
+    global escolha_jogador, vida_inimigo, vida_max_i, identificar_padrao, IA_padrao, IA_acao, jogador_leitura, IA_estilo, turno, probabilidade, identificar_padraoa
 
     identificar_padrao.append(escolha_jogador)
     IA_padrao.append(IA_acao)
@@ -2414,6 +2434,10 @@ def IA_inimigo():
         IA_padrao.pop(0)
     if len(identificar_padrao) > 10:
         identificar_padrao.pop(0)
+    if turno == 0:
+        IA_estilo = randint(0, 4)
+        identificar_padrao = []
+        jogador_leitura = [0,0,0,0,0,0]
 
     if IA_estilo == 0:
         ataque = 20
@@ -2500,9 +2524,6 @@ def IA_inimigo():
         for i in range(6):
             if jogador_leitura[i] > 0:
                 probabilidade[i] = int(jogador_leitura[i] * divisao) 
-        print(jogador_leitura)
-        print(soma)
-        print(probabilidade)
 
         if probabilidade[0] > 30: # ataque
             esquiva = min(50, esquiva + 10)
@@ -2549,7 +2570,6 @@ def IA_inimigo():
 
 
     ataque, defesa, esquiva, magia, cura, mana = IA_estados(ataque, defesa, esquiva, magia, cura, mana)
-    print( ataque, defesa, esquiva, magia, cura, mana)
 
     soma = ataque + defesa + esquiva + magia + cura + mana
     pensamento = randint(1, soma)
@@ -2569,22 +2589,22 @@ def IA_inimigo():
             return IA_acao
         elif pensamento <= ataque + defesa + esquiva + magia:  
             IA_acao = 4
-            magia_especial_i()
+            laça_magia_i()
             return IA_acao
         elif pensamento <= ataque + defesa + esquiva + magia + cura:
             IA_acao = 5
-            cura_i()
+            recupera_vida_i()
             return IA_acao
         else:
             IA_acao = 6
-            mana_i()
+            recupera_mana_i()
             return IA_acao
 
 # Função para gerenciar o nível do jogador
 def nivel_j():
     global jogador_nivel, xp_atual, xp_proximo_nivel, xp_min, xp_max, pontos_abilidades, mana_jogador
     global vida_jogador, escudo_base_j, dano_base_j, dano_magia_j, eficiencia_cura
-    global eficiencia_mana, estamina_jogador, mana_max_j, vida_max_j, estamina_max_j
+    global eficiencia_mana, estamina_jogador, mana_max_j, vida_max_j, estamina_max_j, dificuldade
 
     print('-='*10,'=-'*10)    
     xp_combate = randint(xp_min, xp_max)
@@ -2601,7 +2621,15 @@ def nivel_j():
             xp_proximo_nivel = int(xp_proximo_nivel * 1.2)
             print(f"Parabéns! Você subiu para o nível {jogador_nivel}.")
             print(f"XP necessário para o próximo nível: {xp_proximo_nivel}")
-            pontos_abilidades += 4
+            if dificuldade == 1:
+                pontos_abilidades += 6
+            elif dificuldade == 2:
+                pontos_abilidades += 4
+            elif dificuldade == 3:
+                pontos_abilidades += 3
+            elif dificuldade == 4:  
+                pontos_abilidades += 2 
+
         print('-='*10,'=-'*10)
         print(f'pontos: {pontos_abilidades}')
         print('1) Dano +5')
@@ -2659,13 +2687,11 @@ def nivel_j():
         mana_max_j, vida_max_j, estamina_max_j)
 
 # Cidade Para compra ou troca de itens
-def cidade():
-    global moeda_bronze, moeda_prata, moeda_ouro, escudo_base_j, dano_base_j, afinidade_j, perda_mana_base_j
-    global espada_aprimorada, espada_forjada, Runa_adiquirida, escudo_criado
-    global cajado_criado, manto_criardo, joia_criada
-    global ctco, itens, pocao_cura, pocao_mana, pocao_agilidade, pocao_adrenalina
-    print('Você avista de longe uma pequena vila.')
-    print('Possíveis lojas:\n- Ferreiro\n- Feiticeiro\n- Posto Médico\n- Ervas e Poções')
+def cidade_1(): 
+    global  moeda_bronze, moeda_prata, moeda_ouro, escudo_bonus, dano_bonus
+    global nome_heroi, cavalo, cavalo_2, cavalo_3, energia, flores_coletadas, coleta_ervas_missao, itens
+
+    print(f"{nome_heroi} avista de longe a pequena vila Vale das Flores.\n")
     while True:
         try:
             # Entrada como string para verificar a resposta
@@ -2675,238 +2701,549 @@ def cidade():
                 break
             elif resposta == 'N':
                 print("Você decide não entrar na vila.")
-                print("Você continua sua jornada sem entrar na vila.")
+                print("Você continua sua jornada!.")
                 return False
             else:
                 print("Escolha inválida. Digite 'S' para sim ou 'N' para não.")
         except ValueError:
             print("Entrada inválida.")
+            continue
+
+    time.sleep(3)
+    print("Bem-vindo à vila!")
+    if missao_exploracao_1 == True:
+        vila_relatacao_missao += 1
+        print('voce fala com o chefe da vila e ele afirma estar pasando por dificuldades mais estao indo bem')
+    while True:
+        print('lojas:\n1) Banco\n2) Igreija\n3) estabulo\n4) Catar flores do campo\n5) Sair')
+        
+        while True:
+            try:
+                esco_loja = int(input('qual loja deseja entrar: '))
+                if esco_loja in [1, 2, 3, 4, 5]:
+                    break
+                elif esco_loja == 4:
+                    print("Você decide apenas andar pela vila.")
+                    print("Você continua sua jornada sem entrar nas lojas.")
+                    
+                    return False
+                else:
+                    print('Escolha envalida. Digite de 1 a 5.')
+            except ValueError:
+                print('Escolha envalida. Digite de 1 a 5.')
+                continue
+        
+        time.sleep(3)
+        if esco_loja == 1:
+            print('Bem-vindo ao Banco!')
+            print('Aqui você pode trocar moedas.')
+            print('1) Converter M.Bronze para M.Prata (10:1)')
+            print('2) Converter M.Prata para M.Ouro (10:1)')
+            print('3) Converter M.Ouro para M.Prata (1:10)')
+            print('-='*14, '=-'*14)
+            print(f'M.Bronze: {moeda_bronze}')
+            print(f'M.Prata: {moeda_prata}')
+            print(f'M.Ouro: {moeda_ouro}')
+            print('-='*14, '=-'*14)  
+            while True:
+                try:
+                    quantidade = int(input('Quantas moedas deseja converter? (Digite um número entre 1 e 10): '))
+                    if 1 <= quantidade <= 10:
+                        break
+                    else:
+                        print('Quantidade inválida. Digite um número entre 1 e 10.')
+                except ValueError:
+                    print('Entrada inválida. Digite um número entre 1 e 10.')
+                    continue
+
+            print(f'qual moeda você deseja converter?')
+            print('1) M.Bronze para M.Prata (10:1)')
+            print('2) M.Prata para M.Ouro (10:1)')
+            print('3) M.Ouro para M.Prata (1:10)')
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (4 sair): '))
+                    if esco_loja in [1, 2, 3, 4]:
+                        if esco_loja == 1 and moeda_bronze >= 10:
+                            moeda_bronze -= (quantidade * 10)
+                            moeda_prata += quantidade
+                            print('Moedas convertidas!')
+                        elif esco_loja == 2 and moeda_prata >= 10:
+                            moeda_prata -= (quantidade * 10)
+                            moeda_ouro += quantidade
+                            print('Moedas convertidas!')
+                        elif esco_loja == 3 and moeda_ouro >= 1:
+                            moeda_ouro -= quantidade
+                            moeda_prata += (quantidade * 10)
+                            print('Moedas convertidas!')
+                        elif esco_loja == 4:
+                            break
+                    else:
+                        print('Escolha inválida. Digite de 1 a 4.')
+                except ValueError:
+                    print('Escolha inválida. Digite de 1 a 4.')
+                    continue
+
+        if esco_loja == 2:
+            print('Bem-vindo à Igreja!')
+            print('Aqui você pode doar suas moedas para receber bênçãos.')
+            print('1) Doar M.Prata (1:1) - Recebe +20% de escudo por 30 turnos')
+            print('2) Doar M.Ouro (1:1) - Recebe +20% de dano por 30 turnos')
+            print('3) rezar restaura 30% de sua vida e mana e estamina')
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (4 sair): '))
+                    if esco_loja in [1, 2, 3, 4]:
+                        if esco_loja == 1 and moeda_prata >= 1:
+                            moeda_prata -= 1
+                            escudo_bonus += 20
+                            print('Bênção recebida! +20% de escudo por 30 turnos.')
+                        elif esco_loja == 2 and moeda_ouro >= 1:
+                            moeda_ouro -= 1
+                            dano_bonus += 20
+                            print('Bênção recebida! +20% de dano por 30 turnos.')
+                        elif esco_loja == 3:
+                            vida_jogador = min(vida_max_j, vida_jogador + (vida_max_j // 3))
+                            mana_jogador = min(mana_max_j, mana_jogador + (mana_max_j // 3))
+                            estamina_jogador = min(estamina_max_j, estamina_jogador + (estamina_max_j // 3))
+                            print('Você rezou e restaurou 30% de sua vida, mana e estamina!')
+                        elif esco_loja == 4:
+                            break
+                    else:
+                        print('Escolha inválida. Digite de 1 a 4.')
+                except ValueError:
+                    print('Escolha inválida. Digite de 1 a 4.')
+                    continue
+
+        if esco_loja == 3:
+            print('Bem-vindo ao Estábulo!')
+            print('Aqui você pode comprar um cavalo para aumentar sua velocidade de viagem.')
+            print('1) Cavalo de velho    - M.Bronze: $10 - Aumenta a velocidade de viagem em 10%')
+            print('2) Cavalo de saudavel - M.Prata: $200 - Aumenta a velocidade de viagem em 20%')
+            print('3) Cavalo de corrida  - M.Ouro: $50 - Aumenta a velocidade de viagem em 30%')
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (4 sair): '))
+                    if esco_loja in [1, 2, 3, 4]:
+                        if esco_loja == 1 and moeda_bronze >= 10 and cavalo == False:
+                            moeda_bronze -= 10
+                            energia = 0.04
+                            cavalo = True
+                            print('Cavalo de velho comprado! Velocidade de viagem aumentada em 10%.')
+                        elif esco_loja == 2 and moeda_prata >= 200 and cavalo_2 == False:
+                            moeda_prata -= 200
+                            energia = 0.035
+                            cavalo_2 = True
+                            print('Cavalo de saudavel comprado! Velocidade de viagem aumentada em 20%.')
+                        elif esco_loja == 3 and moeda_ouro >= 50 and cavalo_3 == False:
+                            moeda_ouro -= 50
+                            energia = 0.02
+                            cavalo_3 = True
+                            print('Cavalo de corrida comprado! Velocidade de viagem aumentada em 30%.')
+                        elif esco_loja == 4:
+                            break
+                    else:
+                        print('Escolha inválida. Digite de 1 a 4.')
+                except ValueError:
+                    print('Escolha inválida. Digite de 1 a 4.')
+                    continue
+        
+        if esco_loja == 4:
+            erva_probabolidade = randint(1, 10)
+            erva_tipo = randint(1, 4)
+        
+            if erva_probabolidade <= 5:
+                print('Você encontrou uma erva rara!')
+                if erva_tipo == 1:
+                    itens["Raízes Revigorantes"] += 1
+                    print(f'Você encontrou {itens["Raízes Revigorantes"]} Raízes Revigorantes.')
+                if erva_tipo == 2:
+                    itens["Cogumelo Brilhante"] += 1
+                    print(f'Você encontrou {itens["Cogumelo Brilhante"]} Cogumelos Brilhantes.')
+                if erva_tipo == 3:
+                    itens["Erva-de-São-João"] += 1
+                    print(f'Você encontrou {itens["Erva-de-São-João"]} Ervas-de-São-João.')
+                if erva_tipo == 4:
+                    itens["Rhodiola Rosea"] += 1
+                    print(f'Você encontrou {itens["Rhodiola Rosea"]} Rhodiolas Roseas.')
+                if missao_coleta_ervas == True:
+                    coleta_ervas_missao += 1
+                    print('voce coletrou 1 envar para sua missão de coleta de ervas!')
+            else:
+                print('Você não encontrou nada desta vez, apenas flores.')
+                flores_coletadas += 1
+
+        if esco_loja == 5:
+            print("Você decide apenas andar pela vila.")
+            print("Você continua sua jornada sem entrar nas lojas.")
+            break
+
+def cidade_2():
+    global moeda_bronze, moeda_prata, moeda_ouro, escudo_base_j, dano_base_j, afinidade_j, perda_mana_base_j
+    global espada_aprimorada, espada_forjada, Runa_adiquirida, escudo_criado
+    global cajado_criado, manto_criardo, joia_criada
+    global ctco, itens, pocao_cura, pocao_mana, pocao_agilidade, pocao_adrenalina
+    global missao_caca_1, missao_caca_2, missao_caca_chefe, missao_capitulo, missao_coleta_ervas, missao_exploracao_1, missao_investigacao_1, missao_resgate
+    global inimigos_derrotados_missao, inimigos_derrotados_missao_10, chefes_derrotados_missao, area_avancada_missao, vila_relatacao_missao, coleta_ervas_missao, resgatado_missao, investigacao_missao, missoes_concluidas
+
+    while True:
+        print('Você a vista de longe a pequena vila Moinho de vento.')
+        try:
+            # Entrada como string para verificar a resposta
+            resposta = input('Quer entrar na vila? (S/N): ').strip().upper()
+            if resposta == 'S':
+                print("Você entra na vila.")
+                break
+            elif resposta == 'N':
+                print("Você decide não entrar na vila.")
+                print("Você continua sua jornada!.")
+                return False
+            else:
+                print("Escolha inválida. Digite 'S' para sim ou 'N' para não.")
+        except ValueError:
+            print("Entrada inválida.")
+            continue
         
     time.sleep(3)
     print("Bem-vindo à vila!")
-    print('lojas:\n1 Ferreiro\n2 Feiticeiro\n3 Ervas e Poções\n4 Compra e Venda de intens\n6 Sair')
     while True:
-        try:
-            esco_loja = int(input('qual loja deseja entrar: '))
-            if esco_loja in [1, 2, 3]:
-                break
-            elif esco_loja == 6:
-                print("Você decide apenas andar pela vila.")
-                print("Você continua sua jornada sem entrar nas lojas.")
-                return False
-            else:
-                print('Escolha envalida. Digite de 1 a 3.')
-        except ValueError:
-            print('Escolha envalida. Digite de 1 a 3.')
-
-    time.sleep(3)
-    if esco_loja == 1: 
-        print('Bem-vindo à loja do ferreiro!')
-        print('-='*14, '=-'*14)
-        print(f'M.Bronze: {moeda_bronze}')
-        print(f'M.Prata: {moeda_prata}')
-        print(f'M.Ouro: {moeda_ouro}')
-        print('-='*14, '=-'*14)
-        print(f'1) Forjar Espada          (+5 de dano)         - M.Prata: $25')
-        print(f'2) Melhorar Armadura      (+1 defesa)          - M.Prata: $30')
-        print(f'3) runa de safira         (+10 defesa)         - M.Ouro: $20')
-        print(f'4) Reparar Armadura       (bônus t. de defesa) - M.Prata: $10')
-        print(f'5) Criar Escudo           (+5 defesa)          - M.Ouro: $5')
-        print(f'6) Afiar Armas            (bônus t. de ataque) - M.Prata: $15')
-        print(f'7) Melhorar Espada        (+1 de dano)         - M.Prata: $10')
-        print(f'8) Afiação de Furtif E. K (+5% DE Critico)     - M.Ouro: $20')
-        print('-='*14, '=-'*14)
+        print('lojas:\n1) Ferreiro\n2) Feiticeiro\n3) Compra e Venda de intens\n4) guilda dos aventureiros\n5) Sair')
         while True:
             try:
-                esco_loja = int(input('O que você deseja (9 sair): '))
-                if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-                    if esco_loja == 1 and moeda_prata >= 25 and espada_forjada == False:
-                        dano_base_j += 5
-                        moeda_prata -= 25
-                        espada_forjada = True
-                        print('Espada Forjada!')
-                    elif esco_loja == 2 and moeda_prata >= 30:
-                        escudo_base_j += 1
-                        moeda_prata -= 30
-                        print('Armadura Melhorada!')
-                    elif esco_loja == 3 and moeda_ouro >= 20 and Runa_adiquirida == False:
-                        escudo_base_j += 10
-                        moeda_ouro -= 20
-                        Runa_adiquirida = True
-                        print('Runa adiquirida!')
-                    elif esco_loja == 4 and moeda_prata >= 10:
-                        escudo_bonus += 30
-                        moeda_prata -= 10
-                        print('Seus Equipamento foram Reparados! ')
-                    elif esco_loja == 5 and moeda_ouro >= 5 and escudo_criado == False:
-                        escudo_base_j += 5
-                        moeda_ouro -= 5
-                        escudo_criado = True
-                        print('Escudo Criado!')
-                    elif esco_loja == 6 and moeda_prata >= 15:
-                        dano_bonus += 30
-                        moeda_prata -= 15
-                        print('Arma Afiada!')
-                    elif esco_loja == 7 and moeda_prata >= 10:
-                        dano_base_j += 1
-                        moeda_prata -= 10
-                        print('Melhoramento de Espada Concluido!')
-                    elif esco_loja == 8 and moeda_ouro >= 20 and espada_aprimorada == False:
-                        ctco += 1
-                        moeda_ouro -= 20
-                        espada_aprimorada = True
-                        print('Espada Aprimorada!')
-                    elif esco_loja == 9:
-                        print('Você saio da loja')
-                        break 
-                    else:
-                        print('Moedas insuficiente ou item ja criado!')
+                esco_loja = int(input('qual loja deseja entrar: '))
+                if esco_loja in [1, 2, 3, 4, 5]:
+                    break
                 else:
-                    print('Escolha envalida. Digite de 1 a 9!.')
+                    print('Escolha envalida. Digite de 1 a 5.')
             except ValueError:
-                print('Escolha envalida. Digite de 1 a 9!.')
+                print('Escolha envalida. Digite de 1 a 5.')
+                continue
 
-    if esco_loja == 2:
-        print('Bem Vindo a loja do feiticeiro!')
-        print('-='*14, '=-'*14)
-        print(f'M.Bronze: {moeda_bronze}')
-        print(f'M.Prata: {moeda_prata}')
-        print(f'M.Ouro: {moeda_ouro}')
-        print('-='*14, '=-'*14)
-        print(f'1) Forjar cajado            (+5 de dano magico)   - M.Prata: $55')
-        print(f'2) Melhorar manto           (+2 defesa)           - M.Prata: $50')
-        print(f'3) Encantar Equipamento     (+1 dano m. e defesa) - M.Ouro: $20')
-        print(f'4) benção do gardião        (bônus t. de defesa)  - M.Prata: $500')
-        print(f'5) Criar manto de proteção  (+5 defesa)           - M.Ouro: $10')
-        print(f'6) benção do deus da guerra (bônus t. de ataque)  - M.Prata: $500')
-        print(f'7) Melhorar cajado          (+2 de dano magico)   - M.Prata: $70')
-        print(f'8) Criar Joias de Poder     (-5 perda de mana)    - M.Ouro: $20')
-        print('-='*14, '=-'*14)
-        while True:
-            try:
-                esco_loja = int(input('O que você deseja (9 sair): '))
-                if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-                    if esco_loja == 1 and moeda_prata >= 55 and cajado_criado == False:
-                        dano_magia_j += 5
-                        moeda_prata -= 55
-                        cajado_criado = True
-                        print('cajado Forjada!')
-                    elif esco_loja == 2 and moeda_prata >= 50:
-                        if manto_criardo == True:
-                            escudo_base_j += 2
-                            moeda_prata -= 50
-                            print('Manto Melhorada!')
+        time.sleep(3)
+        if esco_loja == 1: 
+            print('Bem-vindo à loja do ferreiro!')
+            print('-='*14, '=-'*14)
+            print(f'M.Bronze: {moeda_bronze}')
+            print(f'M.Prata: {moeda_prata}')
+            print(f'M.Ouro: {moeda_ouro}')
+            print('-='*14, '=-'*14)
+            print(f'1) Forjar Espada          (+5 de dano)         - M.Prata: $25')
+            print(f'2) Melhorar Armadura      (+1 defesa)          - M.Prata: $30')
+            print(f'3) runa de safira         (+10 defesa)         - M.Ouro: $20')
+            print(f'4) Reparar Armadura       (bônus t. de defesa) - M.Prata: $10')
+            print(f'5) Criar Escudo           (+5 defesa)          - M.Ouro: $5')
+            print(f'6) Afiar Armas            (bônus t. de ataque) - M.Prata: $15')
+            print(f'7) Melhorar Espada        (+1 de dano)         - M.Prata: $10')
+            print(f'8) Afiação de Furtif E. K (+5% DE Critico)     - M.Ouro: $20')
+            print('-='*14, '=-'*14)
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (9 sair): '))
+                    if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                        if esco_loja == 1 and moeda_prata >= 25 and espada_forjada == False:
+                            dano_base_j += 5
+                            moeda_prata -= 25
+                            espada_forjada = True
+                            print('Espada Forjada!')
+                        elif esco_loja == 2 and moeda_prata >= 30:
+                            escudo_base_j += 1
+                            moeda_prata -= 30
+                            print('Armadura Melhorada!')
+                        elif esco_loja == 3 and moeda_ouro >= 20 and Runa_adiquirida == False:
+                            escudo_base_j += 10
+                            moeda_ouro -= 20
+                            Runa_adiquirida = True
+                            print('Runa adiquirida!')
+                        elif esco_loja == 4 and moeda_prata >= 10:
+                            escudo_bonus += 30
+                            moeda_prata -= 10
+                            print('Seus Equipamento foram Reparados! ')
+                        elif esco_loja == 5 and moeda_ouro >= 5 and escudo_criado == False:
+                            escudo_base_j += 5
+                            moeda_ouro -= 5
+                            escudo_criado = True
+                            print('Escudo Criado!')
+                        elif esco_loja == 6 and moeda_prata >= 15:
+                            dano_bonus += 30
+                            moeda_prata -= 15
+                            print('Arma Afiada!')
+                        elif esco_loja == 7 and moeda_prata >= 10:
+                            dano_base_j += 1
+                            moeda_prata -= 10
+                            print('Melhoramento de Espada Concluido!')
+                        elif esco_loja == 8 and moeda_ouro >= 20 and espada_aprimorada == False:
+                            ctco += 1
+                            moeda_ouro -= 20
+                            espada_aprimorada = True
+                            print('Espada Aprimorada!')
+                        elif esco_loja == 9:
+                            print('Você saiu da loja')
+                            break
                         else:
-                            print('Você nao possui o manto')
-                    elif esco_loja == 3 and moeda_ouro >= 20:
-                        dano_magia_j += 1
-                        moeda_ouro -= 20
-                        print('Equipamento Encantado!')
-                    elif esco_loja == 4 and moeda_prata >= 500:
-                        escudo_bonus += 50
-                        moeda_prata -= 500
-                        print('Você recebeu a benção do Guardião! ')
-                    elif esco_loja == 5 and moeda_ouro >= 10 and manto_criardo == False:
-                        escudo_base_j += 5
-                        moeda_ouro -= 10
-                        manto_criardo = True 
-                        print('Manto Criado!')
-                    elif esco_loja == 6 and moeda_prata >= 500:
-                        dano_bonus += 50
-                        moeda_prata -= 500
-                        print('Você recebeu a benção do Deus da guerra!')
-                    elif esco_loja == 7 and moeda_prata >= 70:
-                        dano_magia_j += 2
-                        escudo_base_j += 2
-                        moeda_prata -= 70
-                        print('Melhoramento de do cajado Concluido!')
-                    elif esco_loja == 8 and moeda_ouro >= 20 and joia_criada == False:
-                        perda_mana_base_j -= 5
-                        moeda_ouro -= 20
-                        joia_criada = True
-                        print('Joia do Poder Criada!')
-                    elif esco_loja == 9:
-                        print('Você saio da loja')
-                        break 
+                            print('Moedas insuficiente ou item ja criado!')
                     else:
-                        print('Moedas insuficiente ou item ja criado!')
-                else:
-                    print('Escolha envalida. Digite de 1 a 9.')
-            except ValueError:
-                print('Escolha envalida. Digite de 1 a 9.')
-
-    if esco_loja == 3:
-        print('Bem Vindo a loja de Ervas e Poções')
-        print('-='*14, '=-'*14)
-        print(f'M.Bronze: {moeda_bronze}')
-        print(f'M.Prata: {moeda_prata}')
-        print(f'M.Ouro: {moeda_ouro}')
-        print('-='*14, '=-'*14)
-        print(f'1) Poção de cura       (+1 pocao C.)             - M.Prata: $20')
-        print(f'2) Poção de mana       (+1 pocao M.)             - M.Prata: $30')
-        print(f'3) Poção de adenalina  (-2 p. de mana e energia) - M.Prata: $40')
-        print(f'4) Poção de Agilidade  (+4 precisão)             - M.Prata: $60')
-        print(f'5) raízes revigorantes (iten de criação)         - M.Prata: $10')
-        print(f'6) Cogumelo Brilhante  (iten de criação)         - M.Prata: $15')
-        print(f'7) Erva-de-São-João    (iten de criação)         - M.Prata: $20')
-        print(f'8) Rhodiola rosea      (iten de criação)         - M.Prata: $30')
-        print('-='*14, '=-'*14)
-        while True:
-            try:
-                esco_loja = int(input('O que você deseja (9 sair): '))
-                if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
-                    if esco_loja == 1 and moeda_prata >= 20:
-                        pocao_cura += 1
-                        moeda_prata -= 20
-                        print(f'Poção adiquirida! {pocao_cura}')
-                    elif esco_loja == 2 and moeda_prata >= 30:
-                        pocao_mana += 1
-                        moeda_prata -= 30
-                        print(f'Poção adiquirida! {pocao_mana}')
-                    elif esco_loja == 3 and moeda_prata >= 40:
-                        pocao_adrenalina += 1
-                        moeda_prata -= 40
-                        print(f'Poção adiquirida! {pocao_adrenalina}')
-                    elif esco_loja == 4 and moeda_prata >= 60:
-                        moeda_prata -= 60
-                        pocao_agilidade += 1
-                        print(f'Poção adiquirida! {pocao_agilidade}')
-                    elif esco_loja == 5 and moeda_prata >= 10:
-                        itens["Raízes Revigorantes"] += 1
-                        moeda_prata -= 10
-                        print('Iten, raízes revigorantes adiquirida!')
-                    elif esco_loja == 6 and moeda_prata >= 15:
-                        itens["Cogumelo Brilhante"] += 1
-                        moeda_prata -= 15
-                        print('Iten, Cogumelo Brilhante adiquirida!')
-                    elif esco_loja == 7 and moeda_prata >= 20:
-                        itens["Erva-de-São-João"] += 1
-                        moeda_prata -= 20
-                        print('Iten, Erva-de-São-João adiquirida!')
-                    elif esco_loja == 8 and moeda_prata >= 30:
-                        itens["Rhodiola Rosea"] += 1
-                        moeda_prata -= 30
-                        print('Iten, Rhodiola rosea adiquirida!')
-                    elif esco_loja == 9:
-                        print('Você saio da loja')
-                        break 
-                    else:
-                        print('Moedas insuficiente!')
-                else:
+                        print('Escolha envalida. Digite de 1 a 9!.')
+                except ValueError:
                     print('Escolha envalida. Digite de 1 a 9!.')
-            except ValueError:
-                print('Escolha envalida. Digite de 1 a 9!.')
+                    continue
 
+        elif esco_loja == 2:
+            print('Bem Vindo a loja do feiticeiro!')
+            print('-='*14, '=-'*14)
+            print(f'M.Bronze: {moeda_bronze}')
+            print(f'M.Prata: {moeda_prata}')
+            print(f'M.Ouro: {moeda_ouro}')
+            print('-='*14, '=-'*14)
+            print(f'1) Forjar cajado            (+5 de dano magico)   - M.Prata: $55')
+            print(f'2) Melhorar manto           (+2 defesa)           - M.Prata: $50')
+            print(f'3) Encantar Equipamento     (+1 dano m. e defesa) - M.Ouro: $20')
+            print(f'4) benção do gardião        (bônus t. de defesa)  - M.Prata: $500')
+            print(f'5) Criar manto de proteção  (+5 defesa)           - M.Ouro: $10')
+            print(f'6) benção do deus da guerra (bônus t. de ataque)  - M.Prata: $500')
+            print(f'7) Melhorar cajado          (+2 de dano magico)   - M.Prata: $70')
+            print(f'8) Criar Joias de Poder     (-5 perda de mana)    - M.Ouro: $20')
+            print('-='*14, '=-'*14)
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (9 sair): '))
+                    if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                        if esco_loja == 1 and moeda_prata >= 55 and cajado_criado == False:
+                            dano_magia_j += 5
+                            moeda_prata -= 55
+                            cajado_criado = True
+                            print('cajado Forjada!')
+                        elif esco_loja == 2 and moeda_prata >= 50:
+                            if manto_criardo == True:
+                                escudo_base_j += 2
+                                moeda_prata -= 50
+                                print('Manto Melhorada!')
+                            else:
+                                print('Você nao possui o manto')
+                        elif esco_loja == 3 and moeda_ouro >= 20:
+                            dano_magia_j += 1
+                            moeda_ouro -= 20
+                            print('Equipamento Encantado!')
+                        elif esco_loja == 4 and moeda_prata >= 500:
+                            escudo_bonus += 50
+                            moeda_prata -= 500
+                            print('Você recebeu a benção do Guardião! ')
+                        elif esco_loja == 5 and moeda_ouro >= 10 and manto_criardo == False:
+                            escudo_base_j += 5
+                            moeda_ouro -= 10
+                            manto_criardo = True 
+                            print('Manto Criado!')
+                        elif esco_loja == 6 and moeda_prata >= 500:
+                            dano_bonus += 50
+                            moeda_prata -= 500
+                            print('Você recebeu a benção do Deus da guerra!')
+                        elif esco_loja == 7 and moeda_prata >= 70:
+                            dano_magia_j += 2
+                            escudo_base_j += 2
+                            moeda_prata -= 70
+                            print('Melhoramento de do cajado Concluido!')
+                        elif esco_loja == 8 and moeda_ouro >= 20 and joia_criada == False:
+                            perda_mana_base_j -= 5
+                            moeda_ouro -= 20
+                            joia_criada = True
+                            print('Joia do Poder Criada!')
+                        elif esco_loja == 9:
+                            print('Você saiu da loja')
+                            break
+                        else:
+                            print('Moedas insuficiente ou item ja criado!')
+                    else:
+                        print('Escolha envalida. Digite de 1 a 9.')
+                except ValueError:
+                    print('Escolha envalida. Digite de 1 a 9.')
+                    continue
+
+        elif esco_loja == 3:
+            print('Bem Vindo a loja de Ervas e Poções')
+            print('-='*14, '=-'*14)
+            print(f'M.Bronze: {moeda_bronze}')
+            print(f'M.Prata: {moeda_prata}')
+            print(f'M.Ouro: {moeda_ouro}')
+            print('-='*14, '=-'*14)
+            print(f'1) Poção de cura       (+1 pocao C.)             - M.Prata: $20')
+            print(f'2) Poção de mana       (+1 pocao M.)             - M.Prata: $30')
+            print(f'3) Poção de adenalina  (-2 p. de mana e energia) - M.Prata: $40')
+            print(f'4) Poção de Agilidade  (+4 precisão)             - M.Prata: $60')
+            print(f'5) raízes revigorantes (iten de criação)         - M.Prata: $10')
+            print(f'6) Cogumelo Brilhante  (iten de criação)         - M.Prata: $15')
+            print(f'7) Erva-de-São-João    (iten de criação)         - M.Prata: $20')
+            print(f'8) Rhodiola rosea      (iten de criação)         - M.Prata: $30')
+            print('-='*14, '=-'*14)
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (9 sair): '))
+                    if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8, 9]:
+                        if esco_loja == 1 and moeda_prata >= 20:
+                            pocao_cura += 1
+                            moeda_prata -= 20
+                            print(f'Poção adiquirida! {pocao_cura}')
+                        elif esco_loja == 2 and moeda_prata >= 30:
+                            pocao_mana += 1
+                            moeda_prata -= 30
+                            print(f'Poção adiquirida! {pocao_mana}')
+                        elif esco_loja == 3 and moeda_prata >= 40:
+                            pocao_adrenalina += 1
+                            moeda_prata -= 40
+                            print(f'Poção adiquirida! {pocao_adrenalina}')
+                        elif esco_loja == 4 and moeda_prata >= 60:
+                            moeda_prata -= 60
+                            pocao_agilidade += 1
+                            print(f'Poção adiquirida! {pocao_agilidade}')
+                        elif esco_loja == 5 and moeda_prata >= 10:
+                            itens["Raízes Revigorantes"] += 1
+                            moeda_prata -= 10
+                            print('Iten, raízes revigorantes adiquirida!')
+                        elif esco_loja == 6 and moeda_prata >= 15:
+                            itens["Cogumelo Brilhante"] += 1
+                            moeda_prata -= 15
+                            print('Iten, Cogumelo Brilhante adiquirida!')
+                        elif esco_loja == 7 and moeda_prata >= 20:
+                            itens["Erva-de-São-João"] += 1
+                            moeda_prata -= 20
+                            print('Iten, Erva-de-São-João adiquirida!')
+                        elif esco_loja == 8 and moeda_prata >= 30:
+                            itens["Rhodiola Rosea"] += 1
+                            moeda_prata -= 30
+                            print('Iten, Rhodiola rosea adiquirida!')
+                        elif esco_loja == 9:
+                            print('Você saio da loja')
+                            break
+                        else:
+                            print('Moedas insuficiente!')
+                    else:
+                        print('Escolha envalida. Digite de 1 a 9!.')
+                except ValueError:
+                    print('Escolha envalida. Digite de 1 a 9!.')
+                    continue
+
+        elif esco_loja == 4:
+            print('Bem Vindo a guilda dos aventureiros!')
+            if missao_caca_1 == True and inimigos_derrotados_missao >= 3:
+                moeda_prata += 30
+                missao_caca_1 = False
+                inimigos_derrotados_missao = 0
+                missoes_concluidas += 1
+                print('Missão de caçar um monstro concluida! Recompensa: M.Prata: $30')
+            if missao_caca_2 == True and inimigos_derrotados_missao_10 >= 10:
+                moeda_prata += 400
+                missao_caca_2 = False
+                inimigos_derrotados_missao_10 = 0
+                missoes_concluidas += 1
+                print('Missão de caçar 10 monstros concluida! Recompensa: M.Prata: $400')
+            if missao_caca_chefe == True and chefes_derrotados_missao >= 1:
+                moeda_ouro += 50
+                missao_caca_chefe = False
+                chefes_derrotados_missao = 0
+                missoes_concluidas += 1
+                print('Missão de caçar um chefe concluida! Recompensa: M.Ouro: $50')
+            if missao_capitulo == True and area_avancada_missao >= 1:
+                moeda_prata += 100
+                missao_capitulo = False
+                area_avancada_missao = 0
+                missoes_concluidas += 1
+                print('Missão de avançar de área concluida! Recompensa: M.Prata: $100')
+            if missao_exploracao_1 == True and vila_relatacao_missao >= 1:
+                moeda_prata += 50
+                missao_exploracao_1 = False
+                vila_relatacao_missao = 0
+                missoes_concluidas += 1
+                print('Missão de esploração concluida! Recompensa: M.Prata: $50')
+            if missao_coleta_ervas == True and coleta_ervas_missao >= 10:
+                moeda_bronze += 60
+                missao_coleta_ervas = False
+                coleta_ervas_missao = 0
+                missoes_concluidas += 1
+                print('Missão de coleta concluida! Recompensa: M.bronze: $60')
+            if missao_resgate == True and resgatado_missao >= 1:
+                moeda_bronze += 150
+                missao_resgate = False  
+                resgatado_missao = 0
+                missoes_concluidas += 1
+                print('Missão de resgate concluida! Recompensa: M.bronze: $150')
+            if missao_investigacao_1 == True and investigacao_missao >= 1:
+                moeda_prata += 110
+                missao_investigacao_1 = False  
+                investigacao_missao = 0
+                missoes_concluidas += 1
+                print('Missão de investigação concluida! Recompensa: M.Prata: $110')   
+            
+            print('-='*14, '=-'*14)
+            print(f'M.Bronze: {moeda_bronze}')
+            print(f'M.Prata: {moeda_prata}')
+            print(f'M.Ouro: {moeda_ouro}')
+            print(f'Missoes Concluidas: {missoes_concluidas}')
+            print('-='*14, '=-'*14)
+            print(f'1) Missão de Caça ao Monstro (derrote um monstro ({inimigos_derrotados_missao}/3))       - Recompensa M.Prata: $30')
+            print(f'2) Missão de caça ao Monstro (derrote 10 mostros ({inimigos_derrotados_missao_10}/10))       - Recompensa M.Prata: $400')
+            print(f'3) Missão de caça ao Monstro (derrote 1 chefe ({chefes_derrotados_missao}/1))          - Recompensa M.Ouro: $50')
+            print(f'4) Missão de Exploração (avançar de área ({area_avancada_missao}/1))               - Recompensa M.Prata: $100')
+            print(f'5) Missão de esploração (relatar a situação de vila ({vila_relatacao_missao}/1))    - Recompensa M.Prata: $50')
+            print(f'6) Missão de Coleta (colete 10 ervas ({coleta_ervas_missao}/10))                   - Recompensa M.bronze: $60')
+            print(f'7) Missão de resgate (escontre e resgate o cachorro ({resgatado_missao}/1))    - Recompensa M.bronze: $150')
+            print(f'8) Missão de Investigação (encontre e derrote o mostro ({investigacao_missao}/1)) - Recompensa M.Prata: $110')
+            print('-='*14, '=-'*14)
+            while True:
+                try:
+                    esco_loja = int(input('O que você deseja (9 sair): '))
+                    if esco_loja in [1, 2, 3, 4, 5, 6, 7, 8]:
+                        if esco_loja == 1:
+                            print('Você aceitou a missão de caçar um monstro!')
+                            missao_caca_1 = True
+                        elif esco_loja == 2:
+                            print('Você aceitou a missão de caçar 10 monstros!')
+                            missao_caca_2 = True
+                        elif esco_loja == 3:
+                            print('Você aceitou a missão de caçar um chefe!')
+                            missao_caca_chefe = True
+                        elif esco_loja == 4:
+                            print('Você aceitou a missão de avançar de área!')
+                            missao_capitulo = True
+                        elif esco_loja == 5:
+                            print('Você aceitou a missão de esploração!')
+                            print('Você deve explorar a vila Vale das Flores e relatar a situação para o líder da guilda!')
+                            missao_exploracao_1 = True
+                        elif esco_loja == 6:
+                            print('Você aceitou a missão de coletar 10 ervas!')
+                            missao_coleta_ervas = True
+                        elif esco_loja == 7:
+                            print('Você aceitou a missão de resgate!')
+                            print('Você deve encontrar e resgatar um cachorro perdido na floresta!')
+                            missao_resgate = True
+                        elif esco_loja == 8:
+                            print('Você aceitou a missão de investigação!')
+                            print('Você deve encontrar e derrotar uma aranha gigante escondida na floresta!')
+                            missao_investigacao_1 = True
+                    elif esco_loja == 9:
+                        print('Você saiu da guilda')
+                        break
+                    else:
+                        print('Escolha inválida. Digite de 1 e 9!.')
+                except ValueError:
+                    print('Escolha inválida. Digite de 1 a 9!.')
+                    continue
+
+        elif esco_loja == 5:
+            print("Você decide apenas andar pela vila.")
+            print("Você continua sua jornada sem entrar nas lojas.")
+            break
 # Bonus de poder
 def buffs(): 
     global dano_bonus, escudo_bonus,adrenalina_bonus, agilidade_bonus, dano_base_j, escudo_base_j, perda_estamina_base_j, perda_mana_base_j ,dado_j
     global ata, esc,adr,agil
-    
+    dano_base_copia = dano_base_j
+    escudo_base_copia = escudo_base_j
+
+
     if dano_bonus > 0 and ata == False :
         dano_base_j += int(dano_base_j * 0.10)
         ata = True
     elif dano_bonus == 0 and ata == True:
         dano_base_j -= int(dano_base_j * 0.10)
+        dano_base_j = dano_base_copia
         ata = False
     if dano_bonus > 0:
         dano_bonus -= 1
@@ -2916,12 +3253,14 @@ def buffs():
         esc = True
     elif escudo_bonus == 0 and esc == True:
         escudo_base_j -= int(escudo_base_j * 0.10)
+        escudo_base_j = escudo_base_copia
         esc = False
     if escudo_bonus > 0:
         escudo_bonus -= 1
 
     copiar_perda_estamina = perda_estamina_base_j
     copiar_perda_mana = perda_mana_base_j
+
     if adrenalina_bonus > 0 and adr == False :
         perda_estamina_base_j -= int(perda_estamina_base_j * 0.66)
         perda_mana_base_j -= int(perda_mana_base_j * 0.33)
@@ -2945,190 +3284,198 @@ def buffs():
     return dano_bonus, escudo_bonus, adrenalina_bonus, agilidade_bonus, dano_base_j, escudo_base_j, perda_estamina_base_j, perda_mana_base_j, dado_j, copiar_perda_mana, copiar_perda_estamina, ata, esc, adr, agil
 
 def recupera_mana_i():
-    global mana_inimigo,dado_i
-    print('inimigo tenta recupera mana...')
+    global mana_inimigo,dado_i, nome_inimigo
+    print(f'{nome_inimigo} tenta recupera mana...')
     if mana_inimigo < mana_max_i:
         mana_inimigo = min(mana_inimigo + mana_i, mana_max_i)  # Garantir que mana não exceda 100
-        print(f'inimigo recuperou mana ({mana_i}) MP.')
+        print(f'{nome_inimigo} recuperou mana ({mana_i}) MP.')
     else:
-        print('inimigo sua mana está cheia.')
+        print(f'{nome_inimigo} sua mana está cheia.')
     return mana_inimigo
 def recupera_mana_j():
-    global mana_jogador,dado_j,pocao_mana
-    print('Jogador tenta recupera mana...')
+    global mana_jogador,dado_j,pocao_mana, nome_heroi
+    print(f'{nome_heroi} tenta recupera mana...')
     if pocao_mana > 0 and mana_jogador < mana_max_j:
         mana_jogador = min(mana_jogador + mana_j, mana_max_j)  # Garantir que mana não exceda 100
         pocao_mana -= 1
-        print(f'Jogador recuperou mana ({mana_j} MP). Poções restantes: {pocao_mana}')
+        print(f'{nome_heroi} recuperou mana ({mana_j} MP). Poções restantes: {pocao_mana}')
     else:
-        print('Você não tem poções de mana ou sua mana está cheia.')
+        print(f'{nome_heroi} não tem poções de mana ou sua mana está cheia.')
     return mana_jogador, pocao_mana
         
 def recupera_vida_i():
-    global vida_inimigo,dado_i
-    print('inimigo tenta se cura...')
+    global vida_inimigo,dado_i, nome_inimigo
+    print(f'{nome_inimigo} tenta se cura...')
     if vida_inimigo < vida_max_i: 
         vida_inimigo = min(vida_inimigo + cura_i, vida_max_i)  # Garantir que vida não exceda vida maxima
-        print(f'inimigo se curou ({cura_i}) HP.')
+        print(f'{nome_inimigo} se curou ({cura_i}) HP.')
     else:
-        print('inimigo sua vida está cheia.')
+        print(f'{nome_inimigo} sua vida está cheia.')
     return vida_inimigo
 def recupera_vida_j(): 
-    global vida_jogador,dado_j,pocao_cura
-    print('Jogador tenta se cura...')
+    global vida_jogador,dado_j,pocao_cura, nome_heroi
+    print(f'{nome_heroi} tenta se cura...')
     if pocao_cura > 0 and vida_jogador < vida_max_j: 
         vida_jogador = min(vida_jogador + cura_j, vida_max_j)  # Garantir que vida não exceda 100
         pocao_cura -= 1
-        print(f'Jogador se curou ({cura_j} HP). Poções restantes: {pocao_cura}')
+        print(f'{nome_heroi} se curou ({cura_j} HP). Poções restantes: {pocao_cura}')
     else:
-        print('Você não tem poções de cura ou sua vida está cheia.')
+        print(f'{nome_heroi} não tem poções de cura ou sua vida está cheia.')
     return vida_jogador, pocao_cura
 
 def esquiv_i():
-    global esquiva_i, dado_i, estamina_inimigo, mana_inimigo, perda_estamina_i
+    global esquiva_i, dado_i, estamina_inimigo, mana_inimigo, perda_estamina_i, nome_inimigo
     if estamina_inimigo >= perda_estamina_i:
         estamina_inimigo -= perda_estamina_i
-        print('inimigo tenta esquiva...')
+        print(f'{nome_inimigo} tenta esquiva...')
         if dado_i >= 10:
             esquiva_i = True
         else:
-            print('inimigo falha em esquivar')
+            print(f'{nome_inimigo} falha em esquivar')
             mana_inimigo -= 2 * perda_mana_i
     else:
-        print('inimigo está sem estamina para esquivar')
+        print(f'{nome_inimigo} está sem estamina para esquivar')
     return esquiva_i, estamina_inimigo, mana_inimigo
 def esquiv_j():
-    global esquiva_j, dado_j, estamina_jogador, mana_jogador,perda_estamina_j
+    global esquiva_j, dado_j, estamina_jogador, mana_jogador,perda_estamina_j, nome_heroi
     if estamina_jogador >= perda_estamina_j:
         estamina_jogador -= perda_estamina_j
-        print('jogador tenta esquiva...')
+        print(f'{nome_heroi} tenta esquiva...')
         if dado_j >= 10:
             esquiva_j = True
         else:
-            print('jogador falha em esquivar')
+            print(f'{nome_heroi} falha em esquivar')
             mana_jogador -= 2 * perda_mana_j
     else:
-        print('jogador está sem estamina para esquivar')
+        print(f'{nome_heroi} está sem estamina para esquivar')
     return esquiva_j, estamina_jogador, mana_jogador
 
 def defes_i():
-    global defesa_i,dado_i
-    print('inimigo tenta defende...')
+    global defesa_i,dado_i, nome_inimigo
+    print(f'{nome_inimigo} tenta defende...')
     if dado_i >= 10:
         defesa_i = True
     else:
-        print('inimigo falha em defende')  
+        print(f'{nome_inimigo} falha em defende')  
     return defesa_i
 def defes_j():
-    global defesa_j,dado_j
-    print('jogador tenta defende...')
+    global defesa_j,dado_j, nome_heroi
+    print(f'{nome_heroi} tenta defende...')
     if dado_j >= 10:
         defesa_j = True
     else:
-        print('jogador falha em defende')
+        print(f'{nome_heroi} falha em defende')
     return defesa_j            
 
 def ataqu_i():
-    global dado_i, dano_i, defesa_j, esquiva_j, escudo_efetivo_j, vida_jogador, estamina_inimigo, perda_estamina_i,escudo_efetivo_i
+    global dado_i, dano_i, defesa_j, esquiva_j, escudo_efetivo_j, vida_jogador, estamina_inimigo, perda_estamina_i,escudo_efetivo_i, nome_inimigo, nome_heroi, aparo_j
     if estamina_inimigo >= perda_estamina_i:
         estamina_inimigo -= perda_estamina_i
     else:
         dano_i //= 2
         escudo_efetivo_i //= 2
-        print('inimigo está cansado, dano e escudo reduzidos pela metade')
+        print(f'{nome_inimigo} está cansado, dano e escudo reduzidos pela metade')
     
-    print('inimigo tenta atacar...')
+    print(f'{nome_inimigo} tenta atacar...')
     if dado_i >= 10:
         if defesa_j:
-            print('jogador defende-se')
+            print(f'{nome_heroi} defende-se')
             dano = max(dano_i - escudo_efetivo_j, 0)
-            vida_jogador -= dano
-            print(f"jogador recebeu {dano} de dano")
+            if dano <= 0:
+                print(f'{nome_heroi} aparou o ataque completamente!')
+                aparo_j = True
+            else:
+                vida_jogador -= dano
+                print(f"{nome_heroi} recebeu {dano} de dano")
         elif esquiva_j == True:
-            print('jogador esquivou-se')
+            print(f'{nome_heroi} esquivou-se')
         else:
             vida_jogador -= dano_i
-            print(f"inimigo acerta {dano_i} de dano")
+            print(f"{nome_inimigo} acerta {dano_i} de dano")
     else:
-        print('inimigo falhou em atacar')
-    return vida_jogador, estamina_inimigo
+        print(f'{nome_inimigo} falhou em atacar')
+    return vida_jogador, estamina_inimigo, aparo_j
 def ataqu_j():
-    global dado_j, dano_j, defesa_i, esquiva_i, escudo_efetivo_i, vida_inimigo, estamina_jogador, perda_estamina_j,escudo_efetivo_j
+    global dado_j, dano_j, defesa_i, esquiva_i, escudo_efetivo_i, vida_inimigo, estamina_jogador, perda_estamina_j,escudo_efetivo_j, nome_heroi, nome_inimigo, aparo_i
     if estamina_jogador >= perda_estamina_j:
         estamina_jogador -= perda_estamina_j
     else:
         dano_j //= 2
         escudo_efetivo_j //= 2
-        print('jogador está cansado, dano e escudo reduzidos pela metade')
+        print(f'{nome_heroi} está cansado, dano e escudo reduzidos pela metade')
     
-    print('jogador tenta atacar...')
+    print(f'{nome_heroi} tenta atacar...')
     if dado_j >= 10:
         if defesa_i == True:
             dano = max((dano_j - escudo_efetivo_i), 0)
-            vida_inimigo -= dano
-            print(f'inimigo defende-se, mas leva {dano} de dano')
+            if dano <= 0:
+                print(f'{nome_inimigo} aparou o ataque completamente!')
+                aparo_i = True
+            else:   
+                vida_inimigo -= dano
+                print(f'{nome_inimigo} defende-se, mas leva {dano} de dano')
         elif esquiva_i == True:
-            print('inimigo esquivou-se')
+            print(f'{nome_inimigo} esquivou-se')
         else:
             vida_inimigo -= dano_j
-            print(f'jogador acerta {dano_j} de dano')
+            print(f'{nome_heroi} acerta {dano_j} de dano')
     else:
-        print('jogador falhou em atacar')
-    return vida_inimigo, estamina_jogador
+        print(f'{nome_heroi} falhou em atacar')
+    return vida_inimigo, estamina_jogador, aparo_i
 
 def laça_magia_i():
-    global afinidade_i, dado_i, mana_inimigo, perda_mana_i, magia_especial_i, vida_jogador
+    global afinidade_i, dado_i, mana_inimigo, perda_mana_i, magia_especial_i, vida_jogador, nome_inimigo, nome_heroi
     global escudo_efetivo_j, esquiva_j, defesa_j, estamina_inimigo, perda_estamina_i, dano_i, escudo_efetivo_j
     if estamina_inimigo >= perda_estamina_i:
         estamina_inimigo -= perda_estamina_i
     else:
         dano_i //= 2
         escudo_efetivo_j //= 2
-        print('inimigo está cansado, dano e escudo reduzidos pela metade')
+        print(f'{nome_inimigo} está cansado, dano e escudo reduzidos pela metade')
 
-    print(f'inimigo tenta lança {afinidade_i}...')
+    print(f'{nome_inimigo} tenta lança {afinidade_i}...')
     if mana_inimigo < 15:
-        print(f'inimigo esta sem mana')
+        print(f'{nome_inimigo} esta sem mana')
     elif dado_i >= 15:
         mana_inimigo -= perda_mana_i
         if defesa_j == True:
             vida_jogador -= max(magia_especial_i - escudo_efetivo_j, 0)
-            print('jogador defendeu ')
+            print(f'{nome_heroi} defendeu ')
         elif esquiva_j == True:
-            print('jogador esquivou-se')
+            print(f'{nome_heroi} esquivou-se')
         else:
             vida_jogador -= magia_especial_i
-            print(f'inimigo acerta {afinidade_i} e causa {dano_magia_i} de dano')
+            print(f'{nome_inimigo} acerta {afinidade_i} e causa {dano_magia_i} de dano')
     else:
         mana_inimigo -= perda_mana_i
-        print(f'inimigo falhou em lançar {afinidade_i}')
+        print(f'{nome_inimigo} falhou em lançar {afinidade_i}')
     return vida_jogador, mana_inimigo
 def laça_magia_j():
-    global afinidade_j,dado_j,mana_jogador,perda_mana_j,magia_especial_j,vida_inimigo
+    global afinidade_j,dado_j,mana_jogador,perda_mana_j,magia_especial_j,vida_inimigo, nome_heroi, nome_inimigo
     global escudo_efetivo_i,esquiva_i,defesa_i, perda_estamina_j, estamina_jogador,dano_j, escudo_efetivo_i
     if estamina_jogador >= perda_estamina_j:
         estamina_jogador -= perda_estamina_j
     else:
         dano_j //= 2
         escudo_efetivo_i //= 2
-        print('jogador está cansado, dano e escudo reduzidos pela metade')
+        print(f'{nome_heroi} está cansado, dano e escudo reduzidos pela metade')
     
-    print(f'jogador tenta lança {afinidade_j}...')
+    print(f'{nome_heroi} tenta lança {afinidade_j}...')
     if mana_jogador < 15:
-        print(f'jogador esta sem mana')
+        print(f'{nome_heroi} esta sem mana')
     elif dado_j >= 15:
         mana_jogador -= perda_mana_j
         if defesa_i == True:
             vida_inimigo -= max(magia_especial_j - escudo_efetivo_i, 0)
-            print('inimigo defende-se')
+            print(f'{nome_inimigo} defende-se')
         elif esquiva_i == True:
-            print('inimigo esquivou-se')
+            print(f'{nome_inimigo} esquivou-se')
         else:
             vida_inimigo -= magia_especial_j
-            print(f'jogador acerta {afinidade_j}  e causa {dano_magia_j} de dano')
+            print(f'{nome_heroi} acerta {afinidade_j}  e causa {dano_magia_j} de dano')
     else:
         mana_jogador -= perda_mana_j
-        print(f'jogador falhou em lançar {afinidade_j} ou esta sem mana')
+        print(f'{nome_heroi} falhou em lançar {afinidade_j} ou esta sem mana')
     return vida_inimigo, mana_jogador, estamina_jogador
 
 def abilidade():
@@ -3144,8 +3491,8 @@ def combate():
     global estamina_jogador, estamina_inimigo, pocao_mana, pocao_cura, dificuldade, dano_magia_i
     global dado_i,dado_j, afinidade_j, jogador_nivel, inimigo_nivel, vida_max_j, mana_max_j, estamina_max_j 
     global vida_max_i, mana_max_i, estamina_max_i, dano_j, perda_estamina_j, magia_especial_j 
-    global dano_i, perda_estamina_i, magia_especial_i, critico, ataque, escudo, ctco
-    global defesa_j, esquiva_j, defesa_i, esquiva_i, encontrado, abilidade_100, apresentacao_pause, IA_acao, escolha_jogador
+    global dano_i, perda_estamina_i, magia_especial_i, critico, ataque, escudo, ctco, aparo_j, aparo_i
+    global defesa_j, esquiva_j, defesa_i, esquiva_i, encontrado, abilidade_100, apresentacao_pause, IA_acao, escolha_jogador, nome_heroi
 
     if nome_inimigo in ['Lich','Dragão Arcano','Mimico','Troll','Kraken','Archdemon','Guardião Corrompido','Cavaleiro do Abismo','Serafim Caido','Malgethar'] and indice_capitulo_atual <= 9 and apresentacao_pause == False:
         historia_apresentacao()
@@ -3163,7 +3510,7 @@ def combate():
     esquiva_i = False
 
     print('--'*7, f'turno {turno}', '--'*7)
-    print(f"Nome:     {'HEROI':<5}         {nome_inimigo:>5}")
+    print(f"Nome:     {nome_heroi:<5}         {nome_inimigo:>5}")
     print(F'Nivel:    {jogador_nivel:<5}     {inimigo_nivel:>5}')
     print(f"Vida:     {vida_jogador}/{vida_max_j:<5}   {vida_inimigo:>5}/{vida_max_i}")
     print(f"Mana:     {mana_jogador}/{mana_max_j:<5}   {mana_inimigo:>5}/{mana_max_i} ")
@@ -3171,53 +3518,62 @@ def combate():
     print(f'1) {ataque}    2) {escudo}\n3) Esquiva   4) {afinidade_j}\n5) Cura      6) Restaurar mana\n')
     
     # Escolha da ação do jogador
-    while True:
-        try:
-            escolha_jogador = int(input('Digite um número: '))
-            if escolha_jogador in [1, 2, 3, 4, 5, 6]:
-                break
-            else:
-                print("Escolha inválida. Digite um número entre 1 e 6.")
-        except ValueError:
-            print("Entrada inválida. Digite um número entre 1 e 6.")
+    if aparo_i == True:
+        print(f'{nome_heroi} está atordoado e não pode agir neste turno!')
+        aparo_i = False
+    else:
+        while True:
+            try:
+                escolha_jogador = int(input('Digite um número: '))
+                if escolha_jogador in [1, 2, 3, 4, 5, 6]:
+                    break
+                else:
+                    print("Escolha inválida. Digite um número entre 1 e 6.")
+            except ValueError:
+                print("Entrada inválida. Digite um número entre 1 e 6.")
+                continue
 
-    if escolha_jogador == 1:
-        ataqu_j()
-    elif escolha_jogador == 2:
-        defes_j()
-    elif escolha_jogador == 3:
-        esquiv_j()
-    elif escolha_jogador == 4:
-        laça_magia_j()        
-    elif escolha_jogador == 5:
-        recupera_vida_j()
-    elif escolha_jogador == 6:
-        recupera_mana_j()
+        if escolha_jogador == 1:
+            ataqu_j()
+        elif escolha_jogador == 2:
+            defes_j()
+        elif escolha_jogador == 3:
+            esquiv_j()
+        elif escolha_jogador == 4:
+            laça_magia_j()        
+        elif escolha_jogador == 5:
+            recupera_vida_j()
+        elif escolha_jogador == 6:
+            recupera_mana_j()
 
-    if escolha_jogador in (1,4):
-        if dado_j > (19- ctco):
-            if escolha_jogador == 1:
-                critic = int(critico * dano_j)
-                vida_inimigo -= critic
-            else:
-                critic = int(critico * magia_especial_j)
-                vida_inimigo -= critic
-            print('+',critic)
+        if escolha_jogador in (1,4):
+            if dado_j > (19- ctco):
+                if escolha_jogador == 1:
+                    critic = int(critico * dano_j)
+                    vida_inimigo -= critic
+                else:
+                    critic = int(critico * magia_especial_j)
+                    vida_inimigo -= critic
+                print('+',critic)
 
-    IA_inimigo()
-    
-    if IA_acao in (1,4):
-        if dado_i > 19:
-            if IA_acao == 1:
-                c = int(dano_i * 0.4)
-                vida_jogador -= c
-            else:
-                c = int(dano_magia_i * 0.4)  # 40% do dano total
-                vida_jogador -= c
-            print('+', c)
+    if aparo_j == True:
+        print(f'{nome_inimigo} está atordoado e não pode agir neste turno!')
+        aparo_j = False
+    else:
+        IA_inimigo()
+        
+        if IA_acao in (1,4):
+            if dado_i > 19:
+                if IA_acao == 1:
+                    c = int(dano_i * 0.4)
+                    vida_jogador -= c
+                else:
+                    c = int(dano_magia_i * 0.4)  # 40% do dano total
+                    vida_jogador -= c
+                print('+', c)
+
 
 while True:  
-
     if not encontrado:
         if jogador_nivel <= 2:
             N = 100
@@ -3244,7 +3600,7 @@ while True:
                 # Ajusta atributos do inimigo
                 ultimo_monstro = obter_ultimo_monstro(capitulo_atual)
                 nivel_i = random.randint(min(0, jogador_nivel - 3), jogador_nivel + 1)
-                if ultimo_monstro: 
+                if nome_inimigo in ['Lich','Dragão Arcano','Mimico','Troll','Kraken','Archdemon','Guardião Corrompido','Cavaleiro do Abismo','Serafim Caido','Malgethar']: 
                     nivel_i = random.randint(max(1, jogador_nivel + 2), jogador_nivel + 5)
                 inimigo_nivel = nivel_i
 
@@ -3256,7 +3612,7 @@ while True:
             eficiencia_mana_i = 15
             mana_max_i = 100  # Valor base
             mana_inimigo = mana_max_i
-            estamina_max_i = 100 + (nivel_i * 40)  # Define com base no nível
+            estamina_max_i = 100   # Define com base no nível
             estamina_inimigo = estamina_max_i  # Estamina cheia ao iniciar
             escolha_magia_i()
             i = 0
@@ -3266,8 +3622,8 @@ while True:
                 forca_base_i += 5  
                 eficiencia_cura_i += 2
                 eficiencia_mana_i += 2
-                mana_max_i += 30
-                estamina_max_i += 40
+                mana_max_i += 20
+                estamina_max_i += 20
                 i += 1 
 
             mana_inimigo = mana_max_i  # Ajustar mana com base no nível
@@ -3293,7 +3649,14 @@ while True:
     # Verificar condições de fim de combate
     if vida_inimigo <= 0 and encontrado == True:
         if vida_inimigo <= 0:
-            mortes_inimigos += 1
+            if nome_inimigo in ['Lich','Dragão Arcano','Mimico','Troll','Kraken','Archdemon','Guardião Corrompido','Cavaleiro do Abismo','Serafim Caido','Malgethar']:
+                chefes_derrotados_missao += 1
+                mortes_boss += 1
+            else:
+                inimigos_derrotados_missao += 1
+                inimigos_derrotados_missao_10 += 1
+                mortes_inimigos += 1
+
         encontrado = False
         apresentacao_pause = False
         turno = 0
@@ -3306,6 +3669,8 @@ while True:
             indice_capitulo_atual += 1
             if indice_capitulo_atual < len(capitulos):
                 capitulo_atual = capitulos[indice_capitulo_atual]
+                if missao_capitulo == True:
+                    area_avancada_missao += 1
                 historia()
             elif capitulo_atual == capitulo_final:
                 print('\n' ,vida_inimigo, escolha_definitiva,'\n')
@@ -3320,5 +3685,27 @@ while True:
         fim()
 
     time.sleep(0.6)
+    
 
-creditos()
+end = ("==============================\n"
+    f"             FIm\n"    
+    "______________________________\n"
+    f" Nome: {nome_heroi}\n"
+    f" Nivel maximo: {jogador_nivel}\n"
+    f" Inimigos derrotados: {mortes_inimigos}\n"
+    f" Chefes derrotados: {mortes_boss}\n"
+    f" missoes concluidas: {missoes_concluidas}\n"
+    f" flores coletadas: {flores_coletadas}\n"
+    f" ablidade adiquirida: {abilidade_100}\n"
+    "______________________________\n"
+    "==============================\n"
+    "          RPG BATTLE\n"
+    "          V 0.9 beta\n"
+    "==============================\n"
+    "       Desenvolvido por:\n"
+    "           Kennedy\n"
+    "       Obrigado por jogar.\n"
+    "==============================\n")
+for i in range(0, len(end)):
+    print(end[i], end="", flush=True)
+    time.sleep(0.03)

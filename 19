@@ -1,25 +1,26 @@
 class livro:
-    def __init__(self,nome, paginas):
-        self.nome = nome
-        self.pagina = paginas
-        self.pagina_atual = 2 
+    def __init__(self,titulo, paginas):
+        self.titulo = titulo
+        self.total_paginas = paginas
+        self.pagina_atual = 1 
 
-        print(f'Voce acabou de abrir {self.nome} que tem {self.pagina} no total')
-        print('Voce esta na pagina 1') 
+        print(f'Voce acabou de abrir {self.titulo} que tem {self.total_paginas} no total')
+        print(f'Voce esta na pagina {self.pagina_atual}') 
 
-    def avancar_paginas(self,pag):
-        self.irpara = pag
+    def avancar_paginas(self,qtd = 1):
+        cont = 0
+        for pg in range(0, qtd, 1):
+            if not self.fim_do_livro():
+                self.pagina_atual += 1
+                print(f'pag{self.pagina_atual} >',end=' ')
+                cont += 1
+        print(f'\nvocê avançou {cont} pags e agora esta na pagina {self.pagina_atual}')
+        if self.fim_do_livro():
+              print(f'Closed_book: Voce chegou ao final do livro {self.titulo}') 
         
-        min_pagina = 19
-
-        if self.pagina_atual == 20:
-            print(f'Voce chegou ao fim do livro {self.nome}')
-        else:
-            for self.pagina_atual in range(min(min_pagina, self.irpara)):
-                print(f'pag{self.pagina_atual+2} >',end=' ')
-            print(f'\nvocê avançou {self.irpara} pags e agora esta na pagina {self.pagina_atual+2}')
-            self.pagina_atual = self.irpara
-            
-li = livro('10 coisas que eu aprendi',20)
-li.avancar_paginas(10)
-li.avancar_paginas(15)
+    def fim_do_livro(self) -> bool:
+             return True if self.pagina_atual == self.total_paginas else False
+             
+li = livro('10 coisas que eu aprendi',200)
+li.avancar_paginas(40)
+li.avancar_paginas(105)
