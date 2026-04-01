@@ -3687,8 +3687,15 @@ while True:
     time.sleep(0.6)
     
 
+
+if cristal == True:
+    f =f"Parabéns!\n"
+else:
+    f = f"Game Over\n" 
+
 end = ("==============================\n"
-    f"             FIm\n"    
+    f"          {f}\n"
+    f"             FIm\n" 
     "______________________________\n"
     f" Nome: {nome_heroi}\n"
     f" Nivel maximo: {jogador_nivel}\n"
